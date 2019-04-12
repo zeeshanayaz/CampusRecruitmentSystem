@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".splashScreen.SplashScreenActivity"
+        android:background="@color/colorPrimary">
+
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome"
+            android:id="@+id/welcome"
+            android:textSize="40sp"
+            android:layout_marginStart="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="44dp"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/splashScreenText"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/to_the"
+            style="@style/splashScreenText"
+            android:textSize="18sp"
+            android:id="@+id/tothe"
+            app:layout_constraintTop_toBottomOf="@+id/welcome"
+            app:layout_constraintStart_toStartOf="@+id/welcome"
+    />
+    <TextView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            style="@style/splashScreenText"
+            android:id="@+id/appName"
+            android:textSize="35sp"
+            app:layout_constraintTop_toBottomOf="@+id/tothe"
+            app:layout_constraintStart_toStartOf="@+id/tothe"
+    />
+
+    <Button
+            android:id="@+id/splashLetStartBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_button"
+            android:text="@string/let_s_start"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:fontFamily="@font/poppins"
+            android:drawableEnd="@drawable/ic_right"
+            android:drawablePadding="15dp"
+            app:layout_constraintStart_toStartOf="@+id/appName"
+            android:layout_marginBottom="124dp"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    <ImageView
+            android:id="@+id/splashBackgroundImage"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:src="@drawable/recruitment_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:contentDescription="@string/background_image"/>
+</android.support.constraint.ConstraintLayout>

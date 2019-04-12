@@ -1,3 +1,26 @@
 <resources>
-    <string name="app_name">CampusRecruitmentSystem</string>
+    <string name="app_name">Campus Recruitment System</string>
+    <string name="welcome">Welcome</string>
+    <string name="to_the">to the</string>
+    <string name="background_image">Background Image</string>
+    <string name="let_s_start">let\'s start</string>
+    <string name="app_name_short">C R S</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="quick_and_easy_steps">Quick \nand easy steps</string>
+    <string name="get_started">Get Started</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="forget_password">Forget Pasword ?</string>
+    <string name="login">Login</string>
+    <string name="don_t_have_an_account">Dont have an account ?</string>
+    <string name="join_now">Join Now</string>
+    <string name="header_image">Header Image</string>
+    <string name="student">Student</string>
+    <string name="company">Company</string>
+    <string name="admin">Admin</string>
+    <string name="account_type">Account Type:</string>
+    <string name="logout">Join</string>
+    <string name="already_have_an_account">Already have an account?</string>
 </resources>
