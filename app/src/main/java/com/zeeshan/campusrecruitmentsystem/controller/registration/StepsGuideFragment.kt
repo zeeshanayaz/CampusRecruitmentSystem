@@ -1,4 +1,4 @@
-package com.zeeshan.campusrecruitmentsystem.registration
+package com.zeeshan.campusrecruitmentsystem.controller.registration
 
 
 import android.os.Bundle
@@ -28,7 +28,9 @@ class StepsGuideFragment : Fragment() {
         registrationGetStartedBtn.setOnClickListener {
             activity!!.supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.registrationContainer, LogInFragment())
+                .replace(R.id.registrationContainer,
+                    LogInFragment()
+                )
                 .commit()
         }
     }

@@ -5,7 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".registration.LogOutFragment">
+        tools:context=".controller.registration.LogOutFragment">
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -93,7 +93,6 @@
                              android:layout_height="wrap_content"
                              android:text="@string/student"
                              android:textColor="@color/colorSecondaryText"
-                             android:checked="true"
                 />
                 <RadioButton android:id="@+id/logoutRadioCompany"
                              android:layout_width="wrap_content"
@@ -105,7 +104,8 @@
                              android:layout_width="wrap_content"
                              android:layout_height="wrap_content"
                              android:textColor="@color/colorSecondaryText"
-                             android:text="@string/admin"/>
+                             android:text="@string/admin"
+                />
             </RadioGroup>
 
 

@@ -1,17 +1,29 @@
-package com.zeeshan.campusrecruitmentsystem.splashScreen
+package com.zeeshan.campusrecruitmentsystem.controller.splashScreen
 
 import android.content.Intent
 import android.content.res.Configuration
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.google.firebase.auth.FirebaseAuth
 import com.zeeshan.campusrecruitmentsystem.R
-import com.zeeshan.campusrecruitmentsystem.registration.RegistrationActivity
+import com.zeeshan.campusrecruitmentsystem.controller.dashboard.DashboardActivity
+import com.zeeshan.campusrecruitmentsystem.controller.registration.RegistrationActivity
 import kotlinx.android.synthetic.main.activity_splash_screen.*
 
 class SplashScreenActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val auth : FirebaseAuth = FirebaseAuth.getInstance()
+
+        if (auth.currentUser != null) {
+            val intent = Intent(this@SplashScreenActivity, DashboardActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
+            startActivity(intent)
+            SplashScreenActivity().finish()
+        }
 
         val orientation = resources.configuration.orientation
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
