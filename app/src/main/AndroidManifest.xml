@@ -9,8 +9,9 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".controller.splashScreen.SplashScreenActivity"
-                  android:noHistory="true">
+        <activity
+                android:name=".controller.splashScreen.SplashScreenActivity"
+                android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -21,8 +22,11 @@
                 android:name=".controller.registration.RegistrationActivity"
                 android:noHistory="true">
         </activity>
-        <activity android:name=".controller.dashboard.DashboardActivity"
-                  android:noHistory="true">
+        <activity
+                android:name=".controller.dashboard.DashboardActivity"
+                android:noHistory="true">
+        </activity>
+        <activity android:name=".controller.profile.ProfileActivity">
         </activity>
     </application>
 
