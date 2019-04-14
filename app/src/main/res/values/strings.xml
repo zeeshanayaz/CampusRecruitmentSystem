@@ -23,4 +23,9 @@
     <string name="account_type">Account Type:</string>
     <string name="logout">Join</string>
     <string name="already_have_an_account">Already have an account?</string>
+    <string name="profile">Profile</string>
+    <string name="signout">SignOut</string>
+    <string name="terms_and_condition_for_join_CRM">By clicking Join, you agree to our Terms, Data Policy and Cookie
+        Policy. You may receive SMS notifications from us and can opt out at any time.
+    </string>
 </resources>

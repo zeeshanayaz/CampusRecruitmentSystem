@@ -88,33 +88,37 @@
                         android:textColor="@color/colorPrimaryText"
                         android:text="@string/account_type"
                 />
-                <RadioButton android:id="@+id/logoutRadioStudent"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:text="@string/student"
-                             android:textColor="@color/colorSecondaryText"
+                <RadioButton
+                        android:id="@+id/logoutRadioStudent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/student"
+                        android:textColor="@color/colorSecondaryText"
                 />
-                <RadioButton android:id="@+id/logoutRadioCompany"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:text="@string/company"
-                             android:textColor="@color/colorSecondaryText"
+                <RadioButton
+                        android:id="@+id/logoutRadioCompany"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/company"
+                        android:textColor="@color/colorSecondaryText"
                 />
-                <RadioButton android:id="@+id/logoutRadioAdmin"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:textColor="@color/colorSecondaryText"
-                             android:text="@string/admin"
+                <RadioButton
+                        android:id="@+id/logoutRadioAdmin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorSecondaryText"
+                        android:text="@string/admin"
                 />
             </RadioGroup>
 
 
             <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/forget_password"
+                    android:text="@string/terms_and_condition_for_join_CRM"
                     app:layout_constraintTop_toBottomOf="@+id/logoutAccountTypeRadioGroup"
-                    android:layout_marginTop="8dp" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" android:id="@+id/forgetPasswordLink"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"/>
@@ -137,7 +141,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textView2"
-                    android:layout_marginTop="72dp"
+                    android:layout_marginTop="32dp"
                     app:layout_constraintTop_toBottomOf="@+id/logoutLogoutButton"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="8dp"

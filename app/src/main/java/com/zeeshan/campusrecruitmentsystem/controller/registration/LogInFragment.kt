@@ -48,6 +48,10 @@ class LogInFragment : Fragment() {
         dbReference = FirebaseFirestore.getInstance()
         progress = ProgressDialog(activity!!)
 
+        forgetPasswordLink.setOnClickListener {
+            Snackbar.make(it,"Beta Version. Forget password not implemented...",Snackbar.LENGTH_SHORT).show()
+        }
+
         loginLoginButton.setOnClickListener {
             if (!TextUtils.isEmpty(loginTextEmailAddress.text.trim()) && !TextUtils.isEmpty(loginTextPassword.text.trim())) {
                 if (loginAccountTypeRadioGroup.checkedRadioButtonId == -1) {
@@ -95,7 +99,7 @@ class LogInFragment : Fragment() {
     private fun authenticateUser(email: String, password: String, accountTypeStatus: String) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener {
-                retrieveUserData(it.user.uid, dbReference)
+                retrieveUserData(it.user.uid, dbReference,accountTypeStatus)
             }
             .addOnFailureListener {
                 progress.dismiss()
@@ -103,15 +107,20 @@ class LogInFragment : Fragment() {
             }
     }
 
-    private fun retrieveUserData(uid: String, dbReference: FirebaseFirestore) {
+    private fun retrieveUserData(uid: String, dbReference: FirebaseFirestore, accountTypeStatus: String) {
         dbReference.collection("Users").document(uid).get()
             .addOnSuccessListener {
                 if (it.exists()) {
                     val userData: User = it.toObject(User::class.java)!!
-                    AppPref(activity!!).setUser(userData)
-                    progress.dismiss()
-                    DashboardActivity.accountType = accountTypeStatus
-                    navigateToMain()
+                    if (userData.userAccountType == accountTypeStatus){
+                        AppPref(activity!!).setUser(userData)
+                        progress.dismiss()
+                        navigateToMain()
+                    }
+                    else{
+                        progress.dismiss()
+                        auth.signOut()
+                    }
 
                 }
             }
