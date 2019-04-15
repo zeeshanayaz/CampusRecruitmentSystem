@@ -28,10 +28,10 @@ class DashboardActivity : AppCompatActivity() , NavigationView.OnNavigationItemS
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
-        setSupportActionBar(my_toolbar)
+        setSupportActionBar(dashboardToolbar)
 
         val toggle = ActionBarDrawerToggle(
-            this, drawer_layout, my_toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+            this, drawer_layout, dashboardToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()

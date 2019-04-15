@@ -13,29 +13,13 @@
             android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-                android:id="@+id/my_toolbar"
+                android:id="@+id/dashboardToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
     </android.support.design.widget.AppBarLayout>
-    <!--<android.support.design.widget.AppBarLayout-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:theme="@style/AppTheme.AppBarOverlay">-->
-
-        <!--<android.support.v7.widget.Toolbar-->
-                <!--android:id="@+id/my_toolbar"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="?attr/actionBarSize"-->
-                <!--style="@style/HeaderBar"-->
-                <!--android:foregroundTint="@color/textColor"-->
-                <!--app:theme="@style/ActionBarThemeOverlay"-->
-                <!--app:titleTextColor="@color/textColor"-->
-                <!--app:popupTheme="@style/ActionBarPopupThemeOverlay"-->
-                <!--android:elevation="4dp"/>-->
-    <!--</android.support.design.widget.AppBarLayout>-->
 
     <include layout="@layout/content_main"/>
 

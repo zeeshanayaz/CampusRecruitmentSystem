@@ -84,6 +84,11 @@ class LogInFragment : Fragment() {
             }
         }
 
+////        Facebook Login Button
+//        facebookLoginButton.setOnClickListener {
+//            Snackbar.make(it,"Beta Version. Facebook Login is not supported right now...",Snackbar.LENGTH_SHORT).show()
+//        }
+
         loginCreateUserBtn.setOnClickListener {
             activity!!.supportFragmentManager
                 .beginTransaction()
