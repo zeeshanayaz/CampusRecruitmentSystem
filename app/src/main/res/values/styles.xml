@@ -30,6 +30,13 @@
         <item name="android:fontFamily">@font/poppins_bold</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
+
+    <style name="helpScreenText">
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:textColor">@color/colorPrimaryText</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
     <style name="NavigationStyle">
         <item name="android:fontFamily">@font/poppins_bold</item>
     </style>

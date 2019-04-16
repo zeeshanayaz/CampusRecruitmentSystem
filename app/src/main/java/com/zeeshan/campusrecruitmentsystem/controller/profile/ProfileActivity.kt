@@ -1,14 +1,17 @@
 package com.zeeshan.campusrecruitmentsystem.controller.profile
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.zeeshan.campusrecruitmentsystem.R
+import com.zeeshan.campusrecruitmentsystem.model.User
+import com.zeeshan.campusrecruitmentsystem.utilities.AppPref
 import kotlinx.android.synthetic.main.activity_profile.*
 
 class ProfileActivity : AppCompatActivity() {
+    private lateinit var appPrefUser: User      //User from App Preference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,6 +21,7 @@ class ProfileActivity : AppCompatActivity() {
         getSupportActionBar()!!.setDisplayShowHomeEnabled(true)
         supportActionBar!!.setTitle(R.string.temp_name)
 
+        appPrefUser = AppPref(this).getUser()!!
 
         supportFragmentManager
             .beginTransaction()
@@ -32,7 +36,12 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.profile_menu, menu)
+
+            menuInflater.inflate(R.menu.profile_menu, menu)
+            if (appPrefUser.userAccountType.equals("Student")) {
+                menu!!.findItem(R.id.menu_download_cv).setVisible(true)
+            }
+
         return super.onCreateOptionsMenu(menu)
     }
 

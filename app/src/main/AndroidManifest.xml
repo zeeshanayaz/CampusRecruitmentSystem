@@ -22,7 +22,7 @@
         </activity>
         <activity
                 android:name=".controller.registration.RegistrationActivity"
-                android:noHistory="true">
+                >
         </activity>
         <activity
                 android:name=".controller.dashboard.DashboardActivity">

@@ -7,6 +7,7 @@
     />
 
     <item
+            android:visible="false"
             android:id="@+id/menu_download_cv"
             android:title="@string/download_cv"
     />

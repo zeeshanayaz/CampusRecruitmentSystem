@@ -1,7 +1,7 @@
 package com.zeeshan.campusrecruitmentsystem.controller.registration
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import com.zeeshan.campusrecruitmentsystem.R
 
 class RegistrationActivity : AppCompatActivity() {
@@ -14,7 +14,8 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
     private fun startFragment() {
-        supportFragmentManager.beginTransaction().add(R.id.registrationContainer,
+        supportFragmentManager.beginTransaction().add(
+            R.id.registrationContainer,
             StepsGuideFragment()
         ).commit()
     }

@@ -38,9 +38,24 @@
     <string name="update_profile">Update Profile</string>
     <string name="download_cv">Download CV</string>
     <string name="temp_name">Zeeshan</string>
+    <string name="jobs">Jobs</string>
+    <string name="help_amp_feedback"><![CDATA[Help & Feedback]]></string>
+    <string name="applied_jobs">Applied Jobs</string>
+    <string name="post_job">Post Job</string>
+    <string name="job_list">Job List</string>
+    <string name="students_list">Students List</string>
+    <string name="companies_list">Companies List</string>
 
 
-    <!--Facebook Login-->
-    <!--<string name="facebook_app_id">393372550994986</string>-->
-    <!--<string name="fb_login_protocol_scheme">fb393372550994986</string>-->
+    <string name="app_description">
+        A college campus recruitment system that consists of a student login, company login and an admin login. The
+        project is beneficial for college students, various companies visiting the campus for recruitment and even the
+        college placement officer. The software system allows the students to create their profiles and upload all their
+        details including their marks onto the system. The admin can check each student details and can remove faulty
+        accounts. The system also consists of a company login where various companies visiting the college can view a
+        list of students in that college and also their respective resumes. The software system allows students to view
+        a list of companies who have posted for vacancy. The admin has overall rights over the system and can moderate
+        and delete any details not pertaining to college placement rules. The system handles student as well as company
+        data and efficiently displays all this data to respective sides.
+    </string>
 </resources>

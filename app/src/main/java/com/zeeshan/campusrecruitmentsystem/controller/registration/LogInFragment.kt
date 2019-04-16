@@ -15,7 +15,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zeeshan.campusrecruitmentsystem.R
 import com.zeeshan.campusrecruitmentsystem.controller.dashboard.DashboardActivity
-import com.zeeshan.campusrecruitmentsystem.controller.splashScreen.SplashScreenActivity
 import com.zeeshan.campusrecruitmentsystem.model.User
 import com.zeeshan.campusrecruitmentsystem.utilities.AppPref
 import kotlinx.android.synthetic.main.fragment_log_in.*
@@ -26,6 +25,7 @@ class LogInFragment : Fragment() {
     private lateinit var dbReference: FirebaseFirestore
     private lateinit var progress: ProgressDialog
     private lateinit var accountTypeStatus: String
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,8 +48,12 @@ class LogInFragment : Fragment() {
         dbReference = FirebaseFirestore.getInstance()
         progress = ProgressDialog(activity!!)
 
+
+
+
+
         forgetPasswordLink.setOnClickListener {
-            Snackbar.make(it,"Beta Version. Forget password not implemented...",Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(it, "Beta Version. Forget password not implemented...", Snackbar.LENGTH_SHORT).show()
         }
 
         loginLoginButton.setOnClickListener {
@@ -104,7 +108,7 @@ class LogInFragment : Fragment() {
     private fun authenticateUser(email: String, password: String, accountTypeStatus: String) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener {
-                retrieveUserData(it.user.uid, dbReference,accountTypeStatus)
+                retrieveUserData(it.user.uid, dbReference, accountTypeStatus)
             }
             .addOnFailureListener {
                 progress.dismiss()
@@ -117,12 +121,11 @@ class LogInFragment : Fragment() {
             .addOnSuccessListener {
                 if (it.exists()) {
                     val userData: User = it.toObject(User::class.java)!!
-                    if (userData.userAccountType == accountTypeStatus){
+                    if (userData.userAccountType == accountTypeStatus) {
                         AppPref(activity!!).setUser(userData)
                         progress.dismiss()
                         navigateToMain()
-                    }
-                    else{
+                    } else {
                         progress.dismiss()
                         auth.signOut()
                     }
@@ -133,12 +136,16 @@ class LogInFragment : Fragment() {
 
     //    Navigate TO Mian Dashboard
     private fun navigateToMain() {
+
+
+        val registrationActivity = activity!! as RegistrationActivity
+
         Toast.makeText(activity, "Welcome to CRS", Toast.LENGTH_LONG).show()
         val intent = Intent(activity!!, DashboardActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            //            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
+        registrationActivity.finish()
         startActivity(intent)
-        RegistrationActivity().finish()
-        SplashScreenActivity().finish()
     }
+
 }

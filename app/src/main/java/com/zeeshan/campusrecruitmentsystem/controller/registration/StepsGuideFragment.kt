@@ -31,6 +31,7 @@ class StepsGuideFragment : Fragment() {
                 .replace(R.id.registrationContainer,
                     LogInFragment()
                 )
+                .addToBackStack(null)
                 .commit()
         }
     }
