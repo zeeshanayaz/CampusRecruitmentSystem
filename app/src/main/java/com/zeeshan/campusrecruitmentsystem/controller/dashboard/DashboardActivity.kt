@@ -1,11 +1,10 @@
 package com.zeeshan.campusrecruitmentsystem.controller.dashboard
 
-import android.app.Activity
 import android.app.AlertDialog
+import android.app.ProgressDialog
+import android.content.ContentValues
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
@@ -15,8 +14,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.zeeshan.campusrecruitmentsystem.R
 import com.zeeshan.campusrecruitmentsystem.controller.dashboard.company.PostJobFragment
 import com.zeeshan.campusrecruitmentsystem.controller.profile.ProfileActivity
@@ -26,15 +27,16 @@ import com.zeeshan.campusrecruitmentsystem.model.User
 import com.zeeshan.campusrecruitmentsystem.utilities.AppPref
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.app_bar_dashboard.*
-import kotlinx.android.synthetic.main.create_company_profile_dialog.*
 import kotlinx.android.synthetic.main.create_company_profile_dialog.view.*
 
 class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
 
-    var selectedPhotoUri: Uri? = null
     private lateinit var appPrefUser: User      //User from App Preference
-    private var appPrefCompany: Company? = null      //User from App Preference
+    private var appPrefCompany: Company? = null      //Company from App Preference
+    private lateinit var dbReference: FirebaseFirestore
+    private lateinit var progress: ProgressDialog
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +44,8 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         setSupportActionBar(dashboardToolbar)
 
         appPrefUser = AppPref(this).getUser()!!
+        dbReference = FirebaseFirestore.getInstance()
+        progress = ProgressDialog(this@DashboardActivity)
 
 
         when (appPrefUser.userAccountType) {
@@ -54,11 +58,13 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                     Toast.makeText(this, "Company Not Created", Toast.LENGTH_SHORT).show()
                     showCreateProfilePopup()
                 }
+                else {
+                    startFragment()
+                    Toast.makeText(this, "Wellcome ${appPrefCompany!!.companyName}", Toast.LENGTH_LONG).show()
+                }
+
             }
         }
-
-        startFragment()
-
 
         if (appPrefUser.userAccountType.equals("Student")) {
             nav_view.getMenu().setGroupVisible(R.id.student_nav_menu, true);
@@ -89,29 +95,106 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             .setView(profileCreateDialog)
             .show()
 
-        profileCreateDialog.dialogCompanySelectPhotoBtn.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "image/*"
-            startActivityForResult(intent, 0)
-        }
+//        profileCreateDialog.dialogCompanySelectPhotoBtn.setOnClickListener {
+//            val intent = Intent(Intent.ACTION_PICK)
+//            intent.type = "image/*"
+//            startActivityForResult(intent, 0)
+//        }
 
         profileCreateDialog.dialogContinueToDashboardButton.setOnClickListener {
-            dialogBuilder.dismiss()
+
+            if (
+                dialogBuilderTextEmptyCheck(profileCreateDialog)
+            ) {
+                if (profileCreateDialog.dialogCompanyDescription.length() < 100) {
+                    profileCreateDialog.dialogCompanyDescription.setError("Please provide company Description of atleast 100 letters.....")
+                } else {
+                    showProgress("PLease wait while we are creating your profile....")
+
+                    createCompanyProfile(
+                        appPrefUser,
+                        dbReference,
+                        profileCreateDialog.dialogCompanyName.text.trim().toString(),
+                        profileCreateDialog.dialogCompanyHeadName.text.trim().toString(),
+                        profileCreateDialog.dialogCompanyIndustryCategory.text.trim().toString(),
+                        profileCreateDialog.dialogCompanyCountry.text.trim().toString(),
+                        profileCreateDialog.dialogCompanyDescription.text.trim().toString(),
+                        dialogBuilder
+                    )
+                }
+            } else {
+                Toast.makeText(this, "All input fields are required.", Toast.LENGTH_SHORT).show()
+            }
+
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
-            selectedPhotoUri = data.data
-            val inputStream = this@DashboardActivity.contentResolver.openInputStream(selectedPhotoUri!!)
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-            dialogCompanyPhoto.setImageBitmap(bitmap)
-            dialogCompanySelectPhotoBtn.alpha = 0f
-//            uploadProfileImage(selectedPhotoUri)
-        }
-
+    private fun showProgress(message: String) {
+        progress.setMessage(message)
+        progress.setCancelable(false)
+        progress.show()
     }
+
+    private fun createCompanyProfile(
+        user: User,
+        dbReference: FirebaseFirestore,
+        name: String,
+        headName: String,
+        industryName: String,
+        country: String,
+        description: String,
+        dialogBuilder: AlertDialog
+    ) {
+        val companyData = Company(
+            "${user.userId}",
+            "$name",
+            "$headName",
+            "$industryName",
+            "",
+            "",
+            "$country",
+            "",
+            "$description",
+            "${user.userEmail}",
+            "",
+            "",
+            ""
+        )
+        dbReference.collection("${user.userAccountType}").document(user.userId).set(companyData)
+            .addOnSuccessListener {
+                Log.d(ContentValues.TAG, "${user.userAccountType} successfully written!")
+                AppPref(this@DashboardActivity).setCompany(companyData)
+                dialogBuilder.dismiss()
+                startFragment()
+                Toast.makeText(this, "Wellcome ${appPrefCompany!!.companyName}", Toast.LENGTH_LONG).show()
+                progress.dismiss()
+            }
+            .addOnFailureListener {
+                Log.w(ContentValues.TAG, "Error writing document", it)
+                progress.dismiss()
+            }
+    }
+
+    private fun dialogBuilderTextEmptyCheck(profileCreateDialog : View): Boolean {
+        return profileCreateDialog.dialogCompanyName.text.trim().toString() != "" &&
+                profileCreateDialog.dialogCompanyHeadName.text.trim().toString() != "" &&
+                profileCreateDialog.dialogCompanyIndustryCategory.text.trim().toString() != "" &&
+                profileCreateDialog.dialogCompanyCountry.text.trim().toString() != "" &&
+                profileCreateDialog.dialogCompanyDescription.text.trim().toString() != ""
+    }
+
+    //    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
+//            selectedPhotoUri = data.data
+//            val inputStream = this@DashboardActivity.contentResolver.openInputStream(selectedPhotoUri!!)
+//            val bitmap = BitmapFactory.decodeStream(inputStream)
+//            dialogCompanyPhoto.setImageBitmap(bitmap)
+//            dialogCompanySelectPhotoBtn.alpha = 0f
+////            uploadProfileImage(selectedPhotoUri)
+//        }
+//
+//    }
     private fun startFragment() {
         supportFragmentManager.beginTransaction().add(
             R.id.dashboardContainer,
@@ -266,7 +349,10 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 val curUser = FirebaseAuth.getInstance()
                 curUser.signOut()
                 val user = User("", "", "")
+//                val company: Company? = null
+//                val company = Company("","","","","","","","","","","","","")
                 AppPref(this@DashboardActivity).setUser(user)
+                AppPref(this@DashboardActivity).deleteCompany()
                 val intent = Intent(this@DashboardActivity, SplashScreenActivity::class.java)
                 startActivity(intent)
                 finish()

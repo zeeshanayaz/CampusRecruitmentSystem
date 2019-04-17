@@ -18,7 +18,7 @@ class AppPref(var context: Context) {
         }
     }
 
-    fun setUser(user: User) {
+    fun setUser(user: User?) {
         val sharedPreferences = context.getSharedPreferences("App", 0)
         val edit = sharedPreferences.edit()
         edit.putString("user", Gson().toJson(user))
@@ -42,6 +42,12 @@ class AppPref(var context: Context) {
         val sharedPreferences = context.getSharedPreferences("App", 0)
         val edit = sharedPreferences.edit()
         edit.putString("company", Gson().toJson(company))
+        edit.apply()
+    }
+    fun deleteCompany(){
+        val sharedPreferences = context.getSharedPreferences("App", 0)
+        val edit = sharedPreferences.edit()
+        edit.putString("company", null)
         edit.apply()
     }
 }
