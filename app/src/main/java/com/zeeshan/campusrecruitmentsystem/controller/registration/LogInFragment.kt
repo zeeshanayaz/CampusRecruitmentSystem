@@ -15,6 +15,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zeeshan.campusrecruitmentsystem.R
 import com.zeeshan.campusrecruitmentsystem.controller.dashboard.DashboardActivity
+import com.zeeshan.campusrecruitmentsystem.controller.profile.ProfileActivity
+import com.zeeshan.campusrecruitmentsystem.model.Company
 import com.zeeshan.campusrecruitmentsystem.model.User
 import com.zeeshan.campusrecruitmentsystem.utilities.AppPref
 import kotlinx.android.synthetic.main.fragment_log_in.*
@@ -123,10 +125,10 @@ class LogInFragment : Fragment() {
                     val userData: User = it.toObject(User::class.java)!!
                     if (userData.userAccountType == accountTypeStatus) {
                         AppPref(activity!!).setUser(userData)
-                        progress.dismiss()
-                        navigateToMain()
+                        retrieveData(uid, dbReference, accountTypeStatus)
                     } else {
                         progress.dismiss()
+                        Toast.makeText(activity, "There might be some error in the input fields. Please verify.....", Toast.LENGTH_LONG).show()
                         auth.signOut()
                     }
 
@@ -134,10 +136,27 @@ class LogInFragment : Fragment() {
             }
     }
 
-    //    Navigate TO Mian Dashboard
+    private fun retrieveData(uid: String, dbReference: FirebaseFirestore, accountTypeStatus: String) {
+        dbReference.collection(accountTypeStatus).document(uid).get()
+            .addOnSuccessListener {
+                if (it.exists()) {
+                    when (accountTypeStatus) {
+                        "Student" -> {
+//                    val retrieveData: Student = it.toObject(Student::class.java)!!
+//                    AppPref(activity!!).setStudent(retrieveData)
+                        }
+                        "Company" -> {
+                            val retrieveData: Company = it.toObject(Company::class.java)!!
+                            AppPref(activity!!).setCompany(retrieveData)
+                        }
+                    }
+                }
+                progress.dismiss()
+                navigateToMain()
+            }
+    }
+    //    Navigate TO Main Dashboard
     private fun navigateToMain() {
-
-
         val registrationActivity = activity!! as RegistrationActivity
 
         Toast.makeText(activity, "Welcome to CRS", Toast.LENGTH_LONG).show()

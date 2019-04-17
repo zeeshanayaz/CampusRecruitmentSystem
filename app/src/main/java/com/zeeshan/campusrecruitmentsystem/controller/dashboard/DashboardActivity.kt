@@ -1,13 +1,18 @@
 package com.zeeshan.campusrecruitmentsystem.controller.dashboard
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -21,11 +26,15 @@ import com.zeeshan.campusrecruitmentsystem.model.User
 import com.zeeshan.campusrecruitmentsystem.utilities.AppPref
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.app_bar_dashboard.*
+import kotlinx.android.synthetic.main.create_company_profile_dialog.*
+import kotlinx.android.synthetic.main.create_company_profile_dialog.view.*
 
 class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+
+    var selectedPhotoUri: Uri? = null
     private lateinit var appPrefUser: User      //User from App Preference
-    private lateinit var appPrefCompany: Company      //User from App Preference
+    private var appPrefCompany: Company? = null      //User from App Preference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +42,20 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         setSupportActionBar(dashboardToolbar)
 
         appPrefUser = AppPref(this).getUser()!!
-        appPrefCompany = AppPref(this).getCompany()!!
+
+
+        when (appPrefUser.userAccountType) {
+            "Student" -> {
+
+            }
+            "Company" -> {
+                appPrefCompany = AppPref(this).getCompany()
+                if (appPrefCompany == null) {
+                    Toast.makeText(this, "Company Not Created", Toast.LENGTH_SHORT).show()
+                    showCreateProfilePopup()
+                }
+            }
+        }
 
         startFragment()
 
@@ -57,6 +79,39 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
     }
 
+    //    Create Profile for the first time
+    private fun showCreateProfilePopup() {
+
+        val profileCreateDialog =
+            LayoutInflater.from(this@DashboardActivity).inflate(R.layout.create_company_profile_dialog, null)
+        val dialogBuilder = AlertDialog.Builder(this@DashboardActivity)
+            .setCancelable(false)
+            .setView(profileCreateDialog)
+            .show()
+
+        profileCreateDialog.dialogCompanySelectPhotoBtn.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            startActivityForResult(intent, 0)
+        }
+
+        profileCreateDialog.dialogContinueToDashboardButton.setOnClickListener {
+            dialogBuilder.dismiss()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
+            selectedPhotoUri = data.data
+            val inputStream = this@DashboardActivity.contentResolver.openInputStream(selectedPhotoUri!!)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            dialogCompanyPhoto.setImageBitmap(bitmap)
+            dialogCompanySelectPhotoBtn.alpha = 0f
+//            uploadProfileImage(selectedPhotoUri)
+        }
+
+    }
     private fun startFragment() {
         supportFragmentManager.beginTransaction().add(
             R.id.dashboardContainer,

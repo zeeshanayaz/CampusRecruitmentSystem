@@ -6,6 +6,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.zeeshan.campusrecruitmentsystem.R
+import com.zeeshan.campusrecruitmentsystem.controller.profile.company.CreateCompanyProfileFragment
+import com.zeeshan.campusrecruitmentsystem.model.Company
 import com.zeeshan.campusrecruitmentsystem.model.User
 import com.zeeshan.campusrecruitmentsystem.utilities.AppPref
 import kotlinx.android.synthetic.main.activity_profile.*

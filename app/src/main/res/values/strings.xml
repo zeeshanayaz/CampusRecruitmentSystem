@@ -45,6 +45,7 @@
     <string name="job_list">Job List</string>
     <string name="students_list">Students List</string>
     <string name="companies_list">Companies List</string>
+    <string name="create_profile">Create Your Profile</string>
 
 
     <string name="app_description">
@@ -58,4 +59,11 @@
         and delete any details not pertaining to college placement rules. The system handles student as well as company
         data and efficiently displays all this data to respective sides.
     </string>
+    <string name="create_your_profile">Create Your Profile</string>
+    <string name="company_name">Company Name</string>
+    <string name="company_head_name">Company Head Name</string>
+    <string name="industry_category">Industry Category</string>
+    <string name="country">Country</string>
+    <string name="company_description">Company Description</string>
+    <string name="continue_to_dashboard">Continue to Dashboard</string>
 </resources>

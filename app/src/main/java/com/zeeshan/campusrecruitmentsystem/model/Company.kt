@@ -4,7 +4,7 @@ data class Company(
     var companyId: String = "",
     var companyName: String = "",
     var companyHeadName : String = "",
-    var companyIndustryCategiry : String = "",
+    var companyIndustryCategory : String = "",
     var companyOwnershipType : String = "",
     var companyAddress : String = "",
     var companyCountry : String = "",
