@@ -105,6 +105,9 @@ class LogOutFragment : Fragment() {
                 AppPref(activity!!).setUser(userData)
 
                 progress.dismiss()
+
+                DashboardActivity.userType = accountTypeStatus
+
                 navigateToMain()
 
             }

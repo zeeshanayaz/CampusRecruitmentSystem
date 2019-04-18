@@ -23,6 +23,7 @@ import com.zeeshan.campusrecruitmentsystem.controller.dashboard.company.PostJobF
 import com.zeeshan.campusrecruitmentsystem.controller.profile.ProfileActivity
 import com.zeeshan.campusrecruitmentsystem.controller.splashScreen.SplashScreenActivity
 import com.zeeshan.campusrecruitmentsystem.model.Company
+import com.zeeshan.campusrecruitmentsystem.model.Student
 import com.zeeshan.campusrecruitmentsystem.model.User
 import com.zeeshan.campusrecruitmentsystem.utilities.AppPref
 import kotlinx.android.synthetic.main.activity_dashboard.*
@@ -31,9 +32,13 @@ import kotlinx.android.synthetic.main.create_company_profile_dialog.view.*
 
 class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+    companion object {
+        var userType: String? = null
+    }
 
     private lateinit var appPrefUser: User      //User from App Preference
     private var appPrefCompany: Company? = null      //Company from App Preference
+    private var appPrefStudent: Student? = null      //Company from App Preference
     private lateinit var dbReference: FirebaseFirestore
     private lateinit var progress: ProgressDialog
 
@@ -50,19 +55,31 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
         when (appPrefUser.userAccountType) {
             "Student" -> {
-
+                appPrefStudent = AppPref(this).getStudent()
+                if (appPrefStudent == null) {
+                    Toast.makeText(this, "Company Not Created", Toast.LENGTH_SHORT).show()
+                    startFragment()
+//                    showCreateProfilePopup()
+                } else {
+                    startFragment()
+                    Toast.makeText(this, "Wellcome ${appPrefCompany!!.companyName}", Toast.LENGTH_LONG).show()
+                }
             }
             "Company" -> {
                 appPrefCompany = AppPref(this).getCompany()
                 if (appPrefCompany == null) {
                     Toast.makeText(this, "Company Not Created", Toast.LENGTH_SHORT).show()
                     showCreateProfilePopup()
-                }
-                else {
+
+                } else {
                     startFragment()
                     Toast.makeText(this, "Wellcome ${appPrefCompany!!.companyName}", Toast.LENGTH_LONG).show()
                 }
 
+            }
+            "Admin" -> {
+                startFragment()
+                Toast.makeText(this, "Wellcome Mr.${appPrefUser.userAccountType}", Toast.LENGTH_LONG).show()
             }
         }
 
@@ -81,8 +98,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
-
-
     }
 
     //    Create Profile for the first time
@@ -164,7 +179,10 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             .addOnSuccessListener {
                 Log.d(ContentValues.TAG, "${user.userAccountType} successfully written!")
                 AppPref(this@DashboardActivity).setCompany(companyData)
+
+                appPrefCompany = AppPref(this).getCompany()
                 dialogBuilder.dismiss()
+
                 startFragment()
                 Toast.makeText(this, "Wellcome ${appPrefCompany!!.companyName}", Toast.LENGTH_LONG).show()
                 progress.dismiss()
@@ -175,7 +193,7 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             }
     }
 
-    private fun dialogBuilderTextEmptyCheck(profileCreateDialog : View): Boolean {
+    private fun dialogBuilderTextEmptyCheck(profileCreateDialog: View): Boolean {
         return profileCreateDialog.dialogCompanyName.text.trim().toString() != "" &&
                 profileCreateDialog.dialogCompanyHeadName.text.trim().toString() != "" &&
                 profileCreateDialog.dialogCompanyIndustryCategory.text.trim().toString() != "" &&
@@ -196,9 +214,10 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 //
 //    }
     private fun startFragment() {
+        supportActionBar!!.setTitle("Job List - CRS")
         supportFragmentManager.beginTransaction().add(
             R.id.dashboardContainer,
-            HelpFragment()
+            JobListFragment()
         ).commit()
     }
 
@@ -255,9 +274,11 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
                     // the fragment exists
                     if (it is HelpFragment) {
+
                         Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
                         // The presented fragment is FooFragment type
                     } else {
+                        supportActionBar!!.setTitle(R.string.help_amp_feedback)
                         changeDashboardFragment(HelpFragment())
                     }
                 }
@@ -268,16 +289,27 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             }
 //            Students Navigation
             R.id.nav_pmb_student -> {
+                supportActionBar!!.setTitle("PMB - CRS")
                 Toast.makeText(this, "PMB Students", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_job_list_student -> {
-                Toast.makeText(this, "nav_job_list_student", Toast.LENGTH_SHORT).show()
+                supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
+                    // the fragment exists
+                    if (it is JobListFragment) {
+                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
+                        // The presented fragment is FooFragment type
+                    } else {
+                        supportActionBar!!.setTitle("Job List - CRS")
+                        changeDashboardFragment(JobListFragment())
+                    }
+                }
             }
             R.id.nav_applied_job_student -> {
                 Toast.makeText(this, "nav_applied_job_student", Toast.LENGTH_SHORT).show()
             }
 //            Company Navigation
             R.id.nav_pmb_company -> {
+                supportActionBar!!.setTitle("PMB - CSR")
                 Toast.makeText(this, "nav_pmb_company", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_post_job_company -> {
@@ -287,14 +319,25 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                         Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
                         // The presented fragment is FooFragment type
                     } else {
+                        supportActionBar!!.setTitle(R.string.post_job)
                         changeDashboardFragment(PostJobFragment())
                     }
                 }
             }
             R.id.nav_job_list_company -> {
-                Toast.makeText(this, "nav_job_list_company", Toast.LENGTH_SHORT).show()
+                supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
+                    // the fragment exists
+                    if (it is JobListFragment) {
+                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
+                        // The presented fragment is FooFragment type
+                    } else {
+                        supportActionBar!!.setTitle("Job List - CRS")
+                        changeDashboardFragment(JobListFragment())
+                    }
+                }
             }
             R.id.nav_student_list_company -> {
+                supportActionBar!!.setTitle("Student List - CRS")
                 Toast.makeText(this, "nav_student_list_company", Toast.LENGTH_SHORT).show()
             }
 //            Admin Navigation
@@ -353,6 +396,8 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 //                val company = Company("","","","","","","","","","","","","")
                 AppPref(this@DashboardActivity).setUser(user)
                 AppPref(this@DashboardActivity).deleteCompany()
+                AppPref(this@DashboardActivity).deleteStudent()
+                DashboardActivity.userType = null
                 val intent = Intent(this@DashboardActivity, SplashScreenActivity::class.java)
                 startActivity(intent)
                 finish()

@@ -152,6 +152,9 @@ class LogInFragment : Fragment() {
                     }
                 }
                 progress.dismiss()
+
+                DashboardActivity.userType = accountTypeStatus
+
                 navigateToMain()
             }
     }

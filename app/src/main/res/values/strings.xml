@@ -66,4 +66,16 @@
     <string name="country">Country</string>
     <string name="company_description">Company Description</string>
     <string name="continue_to_dashboard">Continue to Dashboard</string>
+    <string name="create_job_post">Create Job Post</string>
+    <string name="job_description">Job Description</string>
+    <string name="job_title">Job Title</string>
+    <string name="job_skills">Job Skills</string>
+    <string name="applicant_career_level">Applicant Career Level</string>
+    <string name="applicant_experience">Applicant Experience</string>
+    <string name="no_of_position">No. of Position</string>
+    <string name="job_location">Job Location</string>
+    <string name="estimated_salary">Estimated Salary</string>
+    <string name="empty_list">Empty List</string>
+    <string name="job_type">Job Type</string>
+    <string name="job_shift">Job Shift</string>
 </resources>
