@@ -9,6 +9,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.SpinnerAdapter
 import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -19,6 +22,8 @@ import com.zeeshan.campusrecruitmentsystem.utilities.AppPref
 import kotlinx.android.synthetic.main.fragment_post_job.*
 
 class PostJobFragment : Fragment() {
+
+    private lateinit var careerSpinner: Spinner
 
     private lateinit var appPrefUser: User      //User from App Preference
     private lateinit var dbReference: FirebaseFirestore
@@ -34,6 +39,14 @@ class PostJobFragment : Fragment() {
         appPrefUser = AppPref(activity!!).getUser()!!
         dbReference = FirebaseFirestore.getInstance()
         progress = ProgressDialog(activity)
+
+        careerSpinner = view.findViewById(R.id.jobCareerLevelSpinner)
+
+        careerSpinner.adapter = ArrayAdapter(
+            activity!!,
+            android.R.layout.simple_spinner_dropdown_item,
+            resources.getStringArray(R.array.career_level)
+        ) as SpinnerAdapter?
 
 
         return view
@@ -55,7 +68,7 @@ class PostJobFragment : Fragment() {
                         jobTitleText.text.trim().toString(),
                         jobDescriptionText.text.trim().toString(),
                         jobSkillsText.text.trim().toString(),
-                        jobCareerLevelText.text.trim().toString(),
+                        careerSpinner.selectedItem.toString(),
                         jobAppExpText.text.trim().toString(),
                         jobPositionText.text.trim().toString(),
                         jobLocationText.text.trim().toString(),
@@ -82,8 +95,8 @@ class PostJobFragment : Fragment() {
         position: String,
         location: String,
         salary: String,
-        type : String,
-        shift : String
+        type: String,
+        shift: String
     ) {
         val dbRef = dbReference.collection("Job-Post").document()
         val jobPostData = Job(
@@ -99,8 +112,9 @@ class PostJobFragment : Fragment() {
             salary.toInt(),
             type,
             shift,
-            System.currentTimeMillis()
-            )
+            System.currentTimeMillis(),
+            "active"
+        )
 
         dbRef.set(jobPostData)
             .addOnSuccessListener {
@@ -120,7 +134,7 @@ class PostJobFragment : Fragment() {
         jobTitleText.setText("")
         jobDescriptionText.setText("")
         jobSkillsText.setText("")
-        jobCareerLevelText.setText("")
+        jobCareerLevelSpinner.setSelection(0)
         jobAppExpText.setText("")
         jobPositionText.setText("")
         jobLocationText.setText("")
@@ -140,7 +154,7 @@ class PostJobFragment : Fragment() {
         return jobTitleText.text.trim().toString() != "" &&
                 jobDescriptionText.text.trim().toString() != "" &&
                 jobSkillsText.text.trim().toString() != "" &&
-                jobCareerLevelText.text.trim().toString() != "" &&
+                careerSpinner.selectedItem.toString() != "" &&
                 jobAppExpText.text.trim().toString() != "" &&
                 jobPositionText.text.trim().toString() != "" &&
                 jobLocationText.text.trim().toString() != "" &&

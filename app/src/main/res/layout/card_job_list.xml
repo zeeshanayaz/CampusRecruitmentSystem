@@ -3,7 +3,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         app:cardElevation="6dp"
         app:cardUseCompatPadding="true">
@@ -113,6 +114,7 @@
 
 
         <LinearLayout
+                android:id="@+id/jobLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -148,23 +150,56 @@
                     tools:text="Karachi, Pakistan"/>
         </LinearLayout>
 
-        <ImageView
-                android:id="@+id/cardDeleteJobBtn"
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@id/jobLocation"
+                android:layout_marginTop="10dp"
+                android:weightSum="3"
+                android:gravity="center">
+            <Button
+                    android:id="@+id/cardJobWithdrawBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Withdraw"
+                    style="@style/ButtonStyle"
+                    android:visibility="visible"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="10dp"/>
+            <Button
+                    android:id="@+id/cardJobActiveBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Activate"
+                    style="@style/ButtonStyle"
+                    android:background="@color/colorAccent"
+                    android:visibility="visible"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="10dp"/>
+            <Button
+                    android:id="@+id/cardDeleteJobBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Delete"
+                    style="@style/ButtonStyle"
+                    android:background="@color/redColor"
+                    android:visibility="visible"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"/>
+        </LinearLayout>
+
+        <TextView
+                android:id="@+id/cardActiveCheck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_delete"
-                android:layout_alignParentEnd="true"
+                tools:text="Active"
+                android:textSize="16sp"
+                android:textColor="@color/colorAccent"
                 android:layout_alignParentTop="true"
-                android:visibility="invisible"/>
-        <Button
-                android:id="@+id/cardJobWithdrawBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Withdraw"
-                style="@style/ButtonStyle"
-                android:layout_alignParentTop="true"
-                android:visibility="invisible"
-                android:layout_toStartOf="@+id/cardDeleteJobBtn"/>
+                android:layout_alignParentEnd="true"/>
+
         <Button
                 android:id="@+id/cardJobApplyBtn"
                 android:layout_width="wrap_content"
@@ -172,8 +207,9 @@
                 android:text="Apply"
                 style="@style/ButtonStyle"
                 android:background="@color/colorAccent"
-                android:layout_alignParentTop="true"
-                android:visibility="invisible"
+                android:visibility="visible"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/jobLocation"
                 android:layout_alignParentEnd="true"/>
     </RelativeLayout>
 

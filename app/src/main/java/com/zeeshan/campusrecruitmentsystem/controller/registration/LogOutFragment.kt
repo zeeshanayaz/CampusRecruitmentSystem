@@ -106,7 +106,6 @@ class LogOutFragment : Fragment() {
 
                 progress.dismiss()
 
-                DashboardActivity.userType = accountTypeStatus
 
                 navigateToMain()
 
@@ -120,7 +119,6 @@ class LogOutFragment : Fragment() {
 
 //    Navigate TO Mian Dashboard
     private fun navigateToMain() {
-        Toast.makeText(activity, "Welcome to CRS", Toast.LENGTH_LONG).show()
         val intent = Intent(activity!!, DashboardActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }

@@ -32,10 +32,6 @@ import kotlinx.android.synthetic.main.create_company_profile_dialog.view.*
 
 class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    companion object {
-        var userType: String? = null
-    }
-
     private lateinit var appPrefUser: User      //User from App Preference
     private var appPrefCompany: Company? = null      //Company from App Preference
     private var appPrefStudent: Student? = null      //Company from App Preference
@@ -345,10 +341,28 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 Toast.makeText(this, "nav_student_list_admin", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_company_list_admin -> {
-                Toast.makeText(this, "nav_company_list_admin", Toast.LENGTH_SHORT).show()
+                supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
+                    // the fragment exists
+                    if (it is CompanyListFragment) {
+                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
+                        // The presented fragment is FooFragment type
+                    } else {
+                        supportActionBar!!.setTitle("Registered Companies - CRS")
+                        changeDashboardFragment(CompanyListFragment())
+                    }
+                }
             }
             R.id.nav_job_list_admin -> {
-                Toast.makeText(this, "nav_job_list_admin", Toast.LENGTH_SHORT).show()
+                supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
+                    // the fragment exists
+                    if (it is JobListFragment) {
+                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
+                        // The presented fragment is FooFragment type
+                    } else {
+                        supportActionBar!!.setTitle("Job List - CRS")
+                        changeDashboardFragment(JobListFragment())
+                    }
+                }
             }
 
 
@@ -397,7 +411,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 AppPref(this@DashboardActivity).setUser(user)
                 AppPref(this@DashboardActivity).deleteCompany()
                 AppPref(this@DashboardActivity).deleteStudent()
-                DashboardActivity.userType = null
                 val intent = Intent(this@DashboardActivity, SplashScreenActivity::class.java)
                 startActivity(intent)
                 finish()

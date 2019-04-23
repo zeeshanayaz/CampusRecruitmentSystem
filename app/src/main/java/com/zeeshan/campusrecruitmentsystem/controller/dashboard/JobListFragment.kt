@@ -10,14 +10,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.Toast
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
-import com.zeeshan.campusrecruitmentsystem.JobListAdapter
 import com.zeeshan.campusrecruitmentsystem.R
+import com.zeeshan.campusrecruitmentsystem.adapters.JobListAdapter
 import com.zeeshan.campusrecruitmentsystem.model.Job
 import com.zeeshan.campusrecruitmentsystem.model.User
 import com.zeeshan.campusrecruitmentsystem.utilities.AppPref
@@ -54,7 +53,7 @@ class JobListFragment : Fragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.jobListRecycler)
         recyclerView.layoutManager = LinearLayoutManager(activity!!)
 
-        jobListAdapter = JobListAdapter(activity!!, jobList, {
+        jobListAdapter = JobListAdapter(activity!!, jobList, dbReference, {
             //            OnClick
             Toast.makeText(activity!!, "Clicked ${it.jobTitle}", Toast.LENGTH_SHORT).show()
         }, {
@@ -64,35 +63,73 @@ class JobListFragment : Fragment() {
 
         recyclerView.adapter = jobListAdapter
 
+        if (appPrefUser.userAccountType == "Admin") retrieveAllJobList()
         if (appPrefUser.userAccountType == "Student") retrieveJobListForStudent()
         if (appPrefUser.userAccountType == "Company") retrieveJobListForCompany()
     }
 
-    private fun changeButtonVisibility(appPrefUser: User, view: View) {
-        val deleteButton = view.findViewById<Button>(R.id.cardDeleteJobBtn)
-        val withdrawButton = view.findViewById<Button>(R.id.cardJobWithdrawBtn)
-        when (appPrefUser.userAccountType) {
-            "Student" -> {
-                deleteButton.isClickable = false
-                deleteButton.visibility = View.GONE
-                withdrawButton.visibility = View.GONE
-            }
-            "Company" -> {
-                deleteButton.isClickable = true
-                deleteButton.visibility = View.VISIBLE
-                withdrawButton.visibility = View.VISIBLE
-            }
-            "Admin" -> {
-                deleteButton.isClickable = true
-                deleteButton.visibility = View.VISIBLE
-                withdrawButton.visibility = View.GONE
-            }
-        }
+
+    private fun retrieveJobListForStudent() {
+        dbReference.collection("Job-Post").whereEqualTo("jobStatus", "Active")
+            .addSnapshotListener(EventListener<QuerySnapshot> { querySnapshot, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                    return@EventListener
+                }
+
+                for (dc in querySnapshot!!.documentChanges) {
+                    when (dc.type) {
+                        DocumentChange.Type.ADDED -> {
+                            jobList.add(dc.document.toObject(Job::class.java))
+                            println(jobList)
+                            Log.d("UserListFragment", jobList.toString())
+
+                            jobListAdapter.notifyDataSetChanged()
+                            if (!jobList.isEmpty())
+                                emptyListCheckText.visibility = View.INVISIBLE
+                            else
+                                emptyListCheckText.visibility = View.VISIBLE
+                        }
+
+                        DocumentChange.Type.MODIFIED -> {
+                            if (dc.document != null) {
+                                val updatedJob = dc.document.toObject(Job::class.java)
+
+                                jobList.forEachIndexed { position, jobObj ->
+                                    if (jobObj.equals(updatedJob)) {
+                                        println("MATCHED")
+                                        jobList[position] = updatedJob
+                                        jobListAdapter.notifyDataSetChanged()
+                                    } else {
+                                        println("NOT MATCHED")
+                                    }
+                                }
+                            }
+                        }
+                        DocumentChange.Type.REMOVED -> {
+                            if (dc.document != null) {
+                                val removedJob = dc.document.toObject(Job::class.java)
+                                var index: Int = -1
+
+                                jobList.forEachIndexed { position, jobObj ->
+                                    if (jobObj.equals(removedJob)) {
+                                        println("MATCHED")
+                                        index = position
+                                    } else {
+                                        println("NOT MATCHED")
+                                    }
+                                }
+                                jobList.removeAt(index)
+                                jobListAdapter.notifyDataSetChanged()
+                            }
+                        }
+                    }
+                }
+            })
     }
 
-    private fun retrieveJobListForCompany() {
-//        jobList.clear()
 
+    private fun retrieveJobListForCompany() {
         dbReference.collection("Job-Post").whereEqualTo("companyId", "${appPrefUser.userId}")
             .addSnapshotListener(EventListener<QuerySnapshot> { querySnapshot, e ->
                 if (e != null) {
@@ -115,19 +152,43 @@ class JobListFragment : Fragment() {
                         }
 
                         DocumentChange.Type.MODIFIED -> {
+                            if (dc.document != null) {
+                                val updatedJob = dc.document.toObject(Job::class.java)
 
+                                jobList.forEachIndexed { position, jobObj ->
+                                    if (jobObj.equals(updatedJob)) {
+                                        println("MATCHED")
+                                        jobList[position] = updatedJob
+                                        jobListAdapter.notifyDataSetChanged()
+                                    } else {
+                                        println("NOT MATCHED")
+                                    }
+                                }
+                            }
                         }
                         DocumentChange.Type.REMOVED -> {
+                            if (dc.document != null) {
+                                val removedJob = dc.document.toObject(Job::class.java)
+                                var index: Int = -1
 
+                                jobList.forEachIndexed { position, jobObj ->
+                                    if (jobObj.equals(removedJob)) {
+                                        println("MATCHED")
+                                        index = position
+                                    } else {
+                                        println("NOT MATCHED")
+                                    }
+                                }
+                                jobList.removeAt(index)
+                                jobListAdapter.notifyDataSetChanged()
+                            }
                         }
                     }
                 }
             })
     }
 
-    private fun retrieveJobListForStudent() {
-//        jobList.clear()
-
+    private fun retrieveAllJobList() {
         dbReference.collection("Job-Post")
             .addSnapshotListener(EventListener<QuerySnapshot> { querySnapshot, e ->
                 if (e != null) {
@@ -150,9 +211,37 @@ class JobListFragment : Fragment() {
                         }
 
                         DocumentChange.Type.MODIFIED -> {
+                            if (dc.document != null) {
+                                val updatedJob = dc.document.toObject(Job::class.java)
+
+                                jobList.forEachIndexed { position, jobObj ->
+                                    if (jobObj.equals(updatedJob)) {
+                                        println("MATCHED")
+                                        jobList[position] = updatedJob
+                                        jobListAdapter.notifyDataSetChanged()
+                                    } else {
+                                        println("NOT MATCHED")
+                                    }
+                                }
+                            }
 
                         }
                         DocumentChange.Type.REMOVED -> {
+                            if (dc.document != null) {
+                                val removedJob = dc.document.toObject(Job::class.java)
+                                var index: Int = -1
+
+                                jobList.forEachIndexed { position, jobObj ->
+                                    if (jobObj.equals(removedJob)) {
+                                        println("MATCHED")
+                                        index = position
+                                    } else {
+                                        println("NOT MATCHED")
+                                    }
+                                }
+                                jobList.removeAt(index)
+                                jobListAdapter.notifyDataSetChanged()
+                            }
 
                         }
                     }

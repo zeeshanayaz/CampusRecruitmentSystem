@@ -78,4 +78,13 @@
     <string name="empty_list">Empty List</string>
     <string name="job_type">Job Type</string>
     <string name="job_shift">Job Shift</string>
+
+<!--Spinner-->
+    <string-array name="career_level">
+        <item>Select...</item>
+        <item>Intern</item>
+        <item>Software Engineer</item>
+    </string-array>
+
+    <!--Spinner-->
 </resources>

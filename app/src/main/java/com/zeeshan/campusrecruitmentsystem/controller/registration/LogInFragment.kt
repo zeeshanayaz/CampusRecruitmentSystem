@@ -153,7 +153,7 @@ class LogInFragment : Fragment() {
                 }
                 progress.dismiss()
 
-                DashboardActivity.userType = accountTypeStatus
+
 
                 navigateToMain()
             }
@@ -161,8 +161,7 @@ class LogInFragment : Fragment() {
     //    Navigate TO Main Dashboard
     private fun navigateToMain() {
         val registrationActivity = activity!! as RegistrationActivity
-
-        Toast.makeText(activity, "Welcome to CRS", Toast.LENGTH_LONG).show()
+        
         val intent = Intent(activity!!, DashboardActivity::class.java).apply {
             //            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
