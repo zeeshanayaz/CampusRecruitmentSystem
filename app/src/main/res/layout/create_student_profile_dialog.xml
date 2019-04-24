@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent" android:layout_height="match_parent">
+    <android.support.constraint.ConstraintLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp">
+        <TextView
+                android:id="@+id/heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_your_profile"
+                style="@style/headingTextStyle"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+        <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_textStudentFirstName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="8dp" app:layout_constraintTop_toBottomOf="@+id/heading">
+
+            <EditText
+                    android:id="@+id/dialogStdFirstName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimaryText"
+                    android:hint="@string/first_name"
+                    android:inputType="text"
+                    android:drawableEnd="@drawable/ic_edit"
+                    android:drawablePadding="10dp"
+                    android:padding="8dp"
+                    android:background="@drawable/inputs"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_textStudentLastName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/input_layout_textStudentFirstName">
+
+            <EditText
+                    android:id="@+id/dialogStdLastName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimaryText"
+                    android:hint="@string/last_name"
+                    android:inputType="text"
+                    android:drawableEnd="@drawable/ic_edit"
+                    android:drawablePadding="10dp"
+                    android:padding="8dp"
+                    android:background="@drawable/inputs"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_textStudentContactNo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/input_layout_textStudentLastName">
+
+            <EditText
+                    android:id="@+id/dialogStdContactNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimaryText"
+                    android:hint="@string/contact_number"
+                    android:inputType="phone"
+                    android:drawableEnd="@drawable/ic_edit"
+                    android:drawablePadding="10dp"
+                    android:padding="8dp"
+                    android:background="@drawable/inputs"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <Spinner
+                android:id="@+id/dialogStdCountry"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                style="@style/spinner_style"
+                android:spinnerMode="dialog"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/input_layout_textStudentContactNo"/>
+
+        <Spinner
+                android:id="@+id/dialogStdCity"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                style="@style/spinner_style"
+                android:spinnerMode="dialog"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/dialogStdCountry"/>
+
+        <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_textStudentSummarry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/dialogStdCity">
+
+            <EditText
+                    android:id="@+id/dialogStdSummarry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimaryText"
+                    android:hint="@string/summarry"
+                    android:inputType="textMultiLine"
+                    android:drawableEnd="@drawable/ic_edit"
+                    android:drawablePadding="10dp"
+                    android:padding="8dp"
+                    android:background="@drawable/inputs"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+                android:id="@+id/submitStudentProfile"
+                android:text="@string/submit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="32dp"
+                style="@style/ButtonStyle"
+                app:layout_constraintHorizontal_bias="0.0"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/input_layout_textStudentSummarry"/>
+
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

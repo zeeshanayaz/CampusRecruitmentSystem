@@ -14,7 +14,8 @@ data class Job(
     var jobType: String = "",
     var jobShift: String = "",
     var jobCreatedDate: Long = 0,
-    var jobStatus: String = ""
+    var jobStatus: String = "",
+    var jobApplicant: ArrayList<String>? = null
 ) {
     override fun toString(): String {
         return "Job Title = '$jobTitle'"

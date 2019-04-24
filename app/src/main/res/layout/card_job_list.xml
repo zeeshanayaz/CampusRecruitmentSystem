@@ -186,6 +186,15 @@
                     style="@style/ButtonStyle"
                     android:background="@color/redColor"
                     android:visibility="visible"
+                    android:layout_weight="1"/>
+            <Button
+                    android:id="@+id/cardViewApplicantsJobBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Applicants"
+                    style="@style/ButtonStyle"
+                    android:background="@color/colorAccent"
+                    android:visibility="visible"
                     android:layout_weight="1"
                     android:layout_marginStart="10dp"/>
         </LinearLayout>

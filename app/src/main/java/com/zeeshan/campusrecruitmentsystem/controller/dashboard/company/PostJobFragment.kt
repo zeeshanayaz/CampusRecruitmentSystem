@@ -24,6 +24,9 @@ import kotlinx.android.synthetic.main.fragment_post_job.*
 class PostJobFragment : Fragment() {
 
     private lateinit var careerSpinner: Spinner
+    private lateinit var appExpSpinner: Spinner
+    private lateinit var jobShiftSpinner: Spinner
+    private lateinit var jobTypeSpinner: Spinner
 
     private lateinit var appPrefUser: User      //User from App Preference
     private lateinit var dbReference: FirebaseFirestore
@@ -41,11 +44,32 @@ class PostJobFragment : Fragment() {
         progress = ProgressDialog(activity)
 
         careerSpinner = view.findViewById(R.id.jobCareerLevelSpinner)
+        appExpSpinner = view.findViewById(R.id.jobApplicantExperienceSpinner)
+        jobShiftSpinner = view.findViewById(R.id.jobShiftSpinner)
+        jobTypeSpinner = view.findViewById(R.id.jobJobTypeSpinner)
 
         careerSpinner.adapter = ArrayAdapter(
             activity!!,
             android.R.layout.simple_spinner_dropdown_item,
             resources.getStringArray(R.array.career_level)
+        ) as SpinnerAdapter?
+
+        appExpSpinner.adapter = ArrayAdapter(
+            activity!!,
+            android.R.layout.simple_spinner_dropdown_item,
+            resources.getStringArray(R.array.applicant_experience)
+        ) as SpinnerAdapter?
+
+        jobShiftSpinner.adapter = ArrayAdapter(
+            activity!!,
+            android.R.layout.simple_spinner_dropdown_item,
+            resources.getStringArray(R.array.job_shift)
+        ) as SpinnerAdapter?
+
+        jobTypeSpinner.adapter = ArrayAdapter(
+            activity!!,
+            android.R.layout.simple_spinner_dropdown_item,
+            resources.getStringArray(R.array.job_type)
         ) as SpinnerAdapter?
 
 
@@ -69,12 +93,12 @@ class PostJobFragment : Fragment() {
                         jobDescriptionText.text.trim().toString(),
                         jobSkillsText.text.trim().toString(),
                         careerSpinner.selectedItem.toString(),
-                        jobAppExpText.text.trim().toString(),
+                        appExpSpinner.selectedItem.toString(),
                         jobPositionText.text.trim().toString(),
                         jobLocationText.text.trim().toString(),
                         jobEstSalaryText.text.trim().toString(),
-                        jobTypeText.text.trim().toString(),
-                        jobShiftText.text.trim().toString()
+                        jobTypeSpinner.selectedItem.toString(),
+                        jobShiftSpinner.selectedItem.toString()
                     )
                 }
             } else {
@@ -113,7 +137,8 @@ class PostJobFragment : Fragment() {
             type,
             shift,
             System.currentTimeMillis(),
-            "active"
+            "Active",
+            arrayListOf("")
         )
 
         dbRef.set(jobPostData)
@@ -134,13 +159,13 @@ class PostJobFragment : Fragment() {
         jobTitleText.setText("")
         jobDescriptionText.setText("")
         jobSkillsText.setText("")
-        jobCareerLevelSpinner.setSelection(0)
-        jobAppExpText.setText("")
+        careerSpinner.setSelection(0)
+        appExpSpinner.setSelection(0)
         jobPositionText.setText("")
         jobLocationText.setText("")
         jobEstSalaryText.setText("")
-        jobTypeText.setText("")
-        jobShiftText.setText("")
+        jobTypeSpinner.setSelection(0)
+        jobShiftSpinner.setSelection(0)
 
     }
 
@@ -154,14 +179,12 @@ class PostJobFragment : Fragment() {
         return jobTitleText.text.trim().toString() != "" &&
                 jobDescriptionText.text.trim().toString() != "" &&
                 jobSkillsText.text.trim().toString() != "" &&
-                careerSpinner.selectedItem.toString() != "" &&
-                jobAppExpText.text.trim().toString() != "" &&
+                careerSpinner.selectedItemPosition != 0 &&
+                appExpSpinner.selectedItemPosition != 0 &&
                 jobPositionText.text.trim().toString() != "" &&
                 jobLocationText.text.trim().toString() != "" &&
                 jobEstSalaryText.text.trim().toString() != "" &&
-                jobTypeText.text.trim().toString() != "" &&
-                jobShiftText.text.trim().toString() != ""
+                jobTypeSpinner.selectedItemPosition != 0 &&
+                jobShiftSpinner.selectedItemPosition != 0
     }
-
-
 }

@@ -15,6 +15,8 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.SpinnerAdapter
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -29,6 +31,7 @@ import com.zeeshan.campusrecruitmentsystem.utilities.AppPref
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.app_bar_dashboard.*
 import kotlinx.android.synthetic.main.create_company_profile_dialog.view.*
+import kotlinx.android.synthetic.main.create_student_profile_dialog.view.*
 
 class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -37,7 +40,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     private var appPrefStudent: Student? = null      //Company from App Preference
     private lateinit var dbReference: FirebaseFirestore
     private lateinit var progress: ProgressDialog
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,24 +50,27 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         dbReference = FirebaseFirestore.getInstance()
         progress = ProgressDialog(this@DashboardActivity)
 
-
         when (appPrefUser.userAccountType) {
             "Student" -> {
                 appPrefStudent = AppPref(this).getStudent()
                 if (appPrefStudent == null) {
-                    Toast.makeText(this, "Company Not Created", Toast.LENGTH_SHORT).show()
-                    startFragment()
-//                    showCreateProfilePopup()
+                    Toast.makeText(this, "Student Not Created", Toast.LENGTH_SHORT).show()
+//                    startFragment()
+                    showCreateStudentProfilePopup()
                 } else {
                     startFragment()
-                    Toast.makeText(this, "Wellcome ${appPrefCompany!!.companyName}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this,
+                        "Wellcome ${appPrefStudent!!.firstName} ${appPrefStudent!!.lastName}",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
             "Company" -> {
                 appPrefCompany = AppPref(this).getCompany()
                 if (appPrefCompany == null) {
                     Toast.makeText(this, "Company Not Created", Toast.LENGTH_SHORT).show()
-                    showCreateProfilePopup()
+                    showCreateCompanyProfilePopup()
 
                 } else {
                     startFragment()
@@ -96,8 +101,116 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         nav_view.setNavigationItemSelectedListener(this)
     }
 
-    //    Create Profile for the first time
-    private fun showCreateProfilePopup() {
+    //      Create Student Profile for the first time
+    private fun showCreateStudentProfilePopup() {
+
+
+        val studentProfileCreateDialog =
+            LayoutInflater.from(this@DashboardActivity).inflate(R.layout.create_student_profile_dialog, null)
+        val dialogBuilder = AlertDialog.Builder(this@DashboardActivity)
+            .setCancelable(false)
+            .setView(studentProfileCreateDialog)
+            .show()
+
+        studentProfileCreateDialog.dialogStdCountry.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            resources.getStringArray(R.array.country)
+        ) as SpinnerAdapter?
+
+        studentProfileCreateDialog.dialogStdCity.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            resources.getStringArray(R.array.cities_pakistan)
+        ) as SpinnerAdapter?
+
+
+        studentProfileCreateDialog.submitStudentProfile.setOnClickListener {
+            if (checkStudentProfileDialogEmpty(studentProfileCreateDialog)) {
+                var summarry: String = ""
+                if (studentProfileCreateDialog.dialogStdSummarry.text.trim().toString() != "")
+                    summarry = studentProfileCreateDialog.dialogStdSummarry.text.trim().toString()
+
+                showProgress("PLease wait while we are creating your profile....")
+                createStudentProfile(
+                    appPrefUser,
+                    dbReference,
+                    studentProfileCreateDialog.dialogStdFirstName.text.trim().toString(),
+                    studentProfileCreateDialog.dialogStdLastName.text.trim().toString(),
+                    studentProfileCreateDialog.dialogStdContactNumber.text.trim().toString(),
+                    studentProfileCreateDialog.dialogStdCountry.selectedItem.toString(),
+                    studentProfileCreateDialog.dialogStdCity.selectedItem.toString(),
+                    summarry,
+                    dialogBuilder
+                )
+            } else {
+                Toast.makeText(this, "All input fields are required.", Toast.LENGTH_SHORT).show()
+            }
+
+        }
+
+
+    }
+
+    private fun createStudentProfile(
+        user: User,
+        dbReference: FirebaseFirestore,
+        firstName: String,
+        lastName: String,
+        contactNumber: String,
+        country: String,
+        city: String,
+        summarry: String,
+        dialogBuilder: AlertDialog
+    ) {
+        val studentData = Student(
+            user.userId,
+            firstName,
+            lastName,
+            user.userEmail,
+            contactNumber.toLong(),
+            "",
+            country,
+            city,
+            summarry,
+            null,
+            null,
+            null
+        )
+
+        dbReference.collection(user.userAccountType).document(user.userId).set(studentData)
+            .addOnSuccessListener {
+                Log.d(ContentValues.TAG, "${user.userAccountType} successfully written!")
+                AppPref(this@DashboardActivity).setStudent(studentData)
+
+                appPrefStudent = AppPref(this).getStudent()
+                dialogBuilder.dismiss()
+
+                startFragment()
+                Toast.makeText(
+                    this,
+                    "Wellcome Mr.${appPrefStudent!!.firstName} ${appPrefStudent!!.lastName}",
+                    Toast.LENGTH_LONG
+                ).show()
+                progress.dismiss()
+            }
+            .addOnFailureListener {
+                Log.w(ContentValues.TAG, "Error writing document", it)
+                progress.dismiss()
+            }
+
+    }
+
+    private fun checkStudentProfileDialogEmpty(studentProfile: View): Boolean {
+        return studentProfile.dialogStdFirstName.text.trim().toString() != "" &&
+                studentProfile.dialogStdLastName.text.trim().toString() != "" &&
+                studentProfile.dialogStdContactNumber.text.trim().toString() != "" &&
+                studentProfile.dialogStdCountry.selectedItemPosition != 0 &&
+                studentProfile.dialogStdCity.selectedItemPosition != 0
+    }
+
+    //      Create Profile for the first time
+    private fun showCreateCompanyProfilePopup() {
 
         val profileCreateDialog =
             LayoutInflater.from(this@DashboardActivity).inflate(R.layout.create_company_profile_dialog, null)
@@ -105,13 +218,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             .setCancelable(false)
             .setView(profileCreateDialog)
             .show()
-
-//        profileCreateDialog.dialogCompanySelectPhotoBtn.setOnClickListener {
-//            val intent = Intent(Intent.ACTION_PICK)
-//            intent.type = "image/*"
-//            startActivityForResult(intent, 0)
-//        }
-
         profileCreateDialog.dialogContinueToDashboardButton.setOnClickListener {
 
             if (
@@ -197,18 +303,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 profileCreateDialog.dialogCompanyDescription.text.trim().toString() != ""
     }
 
-    //    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
-//            selectedPhotoUri = data.data
-//            val inputStream = this@DashboardActivity.contentResolver.openInputStream(selectedPhotoUri!!)
-//            val bitmap = BitmapFactory.decodeStream(inputStream)
-//            dialogCompanyPhoto.setImageBitmap(bitmap)
-//            dialogCompanySelectPhotoBtn.alpha = 0f
-////            uploadProfileImage(selectedPhotoUri)
-//        }
-//
-//    }
     private fun startFragment() {
         supportActionBar!!.setTitle("Job List - CRS")
         supportFragmentManager.beginTransaction().add(
@@ -252,16 +346,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         return super.onOptionsItemSelected(item)
     }
 
-//    fun Fragment.setVisibilityChangeListener(clazz: Class<out Fragment>, listener: (Boolean) -> Unit) {
-//        fragmentManager?.run {
-//            addOnBackStackChangedListener {
-//                val topFragmentTag = getBackStackEntryAt(backStackEntryCount - 1).name
-//                val topFragment = findFragmentByTag(topFragmentTag)
-//                listener(topFragment != null && topFragment::class.java == clazz)
-//            }
-//        }
-//    }
-
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
@@ -301,7 +385,17 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 }
             }
             R.id.nav_applied_job_student -> {
-                Toast.makeText(this, "nav_applied_job_student", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this, "nav_applied_job_student", Toast.LENGTH_SHORT).show()
+                supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
+                    // the fragment exists
+                    if (it is AppliedJobFragment) {
+                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
+                        // The presented fragment is FooFragment type
+                    } else {
+                        supportActionBar!!.setTitle("Job Applied List - CRS")
+                        changeDashboardFragment(AppliedJobFragment())
+                    }
+                }
             }
 //            Company Navigation
             R.id.nav_pmb_company -> {

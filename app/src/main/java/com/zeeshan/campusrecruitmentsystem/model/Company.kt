@@ -16,7 +16,7 @@ data class Company(
     var companyContactEmail : String = "",
     var companyContactNumber : String = "",
     var companyWebsite : String = "",
-    var companyLogoUrl : String = ""
+    var companyLogoUrl : String? = null
 ) {
     override fun toString(): String {
         return "Company(companyName='$companyName')"

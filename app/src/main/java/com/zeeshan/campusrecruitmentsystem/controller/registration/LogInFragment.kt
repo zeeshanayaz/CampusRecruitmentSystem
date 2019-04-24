@@ -17,6 +17,7 @@ import com.zeeshan.campusrecruitmentsystem.R
 import com.zeeshan.campusrecruitmentsystem.controller.dashboard.DashboardActivity
 import com.zeeshan.campusrecruitmentsystem.controller.profile.ProfileActivity
 import com.zeeshan.campusrecruitmentsystem.model.Company
+import com.zeeshan.campusrecruitmentsystem.model.Student
 import com.zeeshan.campusrecruitmentsystem.model.User
 import com.zeeshan.campusrecruitmentsystem.utilities.AppPref
 import kotlinx.android.synthetic.main.fragment_log_in.*
@@ -72,7 +73,7 @@ class LogInFragment : Fragment() {
                     }
 
                     Snackbar.make(view, "Connecting to Server", Snackbar.LENGTH_SHORT).setAction("Action", null).show()
-                    progress.setTitle("Creating New Account")
+                    progress.setTitle("Login")
                     progress.setMessage("Please wait, while we are verifying your details...")
                     progress.setCancelable(false)
                     progress.show()
@@ -142,8 +143,8 @@ class LogInFragment : Fragment() {
                 if (it.exists()) {
                     when (accountTypeStatus) {
                         "Student" -> {
-//                    val retrieveData: Student = it.toObject(Student::class.java)!!
-//                    AppPref(activity!!).setStudent(retrieveData)
+                    val retrieveData: Student = it.toObject(Student::class.java)!!
+                    AppPref(activity!!).setStudent(retrieveData)
                         }
                         "Company" -> {
                             val retrieveData: Company = it.toObject(Company::class.java)!!

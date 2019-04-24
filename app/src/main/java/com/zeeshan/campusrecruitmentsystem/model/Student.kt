@@ -5,9 +5,13 @@ class Student(
     var firstName : String = "",
     var lastName : String = "",
     var emailAddress : String = "",
-    var contactNumber : Int = 0,
+    var contactNumber : Long = 0,
+    var address : String = "",
+    var country : String = "",
+    var city : String = "",
     var summarry : String = "",
-    var experience : ArrayList<String>,
-    var projectsDone : ArrayList<String>
+    var experience : ArrayList<String>? = null,
+    var projectsDone : ArrayList<String>? = null,
+    var profileImageUrl: String? = null
 ) {
 }

@@ -1,6 +1,8 @@
 package com.zeeshan.campusrecruitmentsystem.adapters
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -23,7 +25,6 @@ class JobListAdapter(
     var dbReference: FirebaseFirestore,
     var itemClick: (job: Job) -> Unit,
     var itemLongClick: (job: Job) -> Unit
-
 ) :
     RecyclerView.Adapter<JobListAdapter.MyViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): MyViewHolder {
@@ -56,10 +57,14 @@ class JobListAdapter(
         var withdrawBtn = view.findViewById<Button>(R.id.cardJobWithdrawBtn)
         var applyBtn = view.findViewById<Button>(R.id.cardJobApplyBtn)
         var checkJob = view.findViewById<TextView>(R.id.cardActiveCheck)
-        var activeteJobBtn = view.findViewById<TextView>(R.id.cardJobActiveBtn)
+        var activeteJobBtn = view.findViewById<Button>(R.id.cardJobActiveBtn)
+        var applicantJobBtn = view.findViewById<Button>(R.id.cardViewApplicantsJobBtn)
+
+        val dialogBuilder = AlertDialog.Builder(context)
+
+
         //        val dbReference = FirebaseFirestore.getInstance()
         fun bindJob(job: Job) {
-
             title.text = job.jobTitle
             companyName.text = "XYZ Company"
             jobType.text = job.jobType
@@ -80,9 +85,16 @@ class JobListAdapter(
                     deleteBtn.visibility = View.GONE
                     withdrawBtn.visibility = View.GONE
                     applyBtn.visibility = View.VISIBLE
+                    activeteJobBtn.visibility = View.GONE
+                    applicantJobBtn.visibility = View.GONE
+                    if (job.jobApplicant!!.contains(user.userId)){
+                        applyBtn.setText("Applied")
+                    }
                 }
                 "Company", "Admin" -> {
+
                     deleteBtn.visibility = View.VISIBLE
+                    applicantJobBtn.visibility = View.VISIBLE
                     if (job.jobStatus == "Active") {
                         withdrawBtn.visibility = View.VISIBLE
                         activeteJobBtn.visibility = View.GONE
@@ -101,13 +113,31 @@ class JobListAdapter(
             }
             if (job.jobStatus == "Inactive") {
                 checkJob.setTextColor(Color.parseColor("#FF0000"))
-            } else if (job.jobStatus == "Active"){
+            } else if (job.jobStatus == "Active") {
                 checkJob.setTextColor(Color.parseColor("#4CAF50"))
             }
 
 
             applyBtn.setOnClickListener {
-                Toast.makeText(context, "Apply Btn Clicked", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, "Apply Btn Clicked", Toast.LENGTH_SHORT).show()
+                var applicantList = job.jobApplicant
+
+                if (applicantList?.size == 1 && applicantList[0] == "") {
+                    applicantList[0] = user!!.userId
+                } else if (!applicantList!!.contains(user!!.userId)) {
+                    applicantList.add(user.userId)
+                } else{
+                    Toast.makeText(context, "You have already applied for the job..", Toast.LENGTH_SHORT).show()
+                }
+                dbReference.collection("Job-Post").document(job.jobId).update("jobApplicant", applicantList)
+                    .addOnSuccessListener {
+                        Log.d(
+                            "JOBSTATUS",
+                            "DocumentSnapshot successfully updated Applicant List"
+                        )
+                        applyBtn.setText("Applied")
+                    }
+                    .addOnFailureListener { e -> Log.d("JOBSTATUS", "Error updating document", e) }
             }
 
             withdrawBtn.setOnClickListener {
@@ -118,10 +148,27 @@ class JobListAdapter(
             }
 
             deleteBtn.setOnClickListener {
-                dbReference.collection("Job-Post").document(job.jobId).delete()
-                    .addOnSuccessListener { Log.d("JOBSTATUS", "DocumentSnapshot successfully deleted!") }
-                    .addOnFailureListener { e -> Log.d("JOBSTATUS", "Error deleting document", e) }
-                Toast.makeText(context, "Delete Btn Clicked", Toast.LENGTH_SHORT).show()
+
+                val create: AlertDialog = dialogBuilder.create()
+                dialogBuilder.setCancelable(false)
+                dialogBuilder.setTitle("Delete Job!")
+                dialogBuilder.setMessage("Do you want to delete ${job.jobTitle}")
+
+                dialogBuilder.setPositiveButton("Delete", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface?, which: Int) {
+                        dbReference.collection("Job-Post").document(job.jobId).delete()
+                            .addOnSuccessListener { Log.d("JOBSTATUS", "DocumentSnapshot successfully deleted!") }
+                            .addOnFailureListener { e -> Log.d("JOBSTATUS", "Error deleting document", e) }
+                        Toast.makeText(context, "${job.jobTitle} Deleted", Toast.LENGTH_SHORT).show()
+                    }
+                })
+                dialogBuilder.setNegativeButton("Cancel", object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface?, which: Int) {
+                        create.dismiss()
+                    }
+                })
+                dialogBuilder.create()
+                dialogBuilder.show()
             }
 
             activeteJobBtn.setOnClickListener {
@@ -129,6 +176,11 @@ class JobListAdapter(
                 dbReference.collection("Job-Post").document(job.jobId).update("jobStatus", "Active")
                     .addOnSuccessListener { Log.d("JOBSTATUS", "DocumentSnapshot successfully updated!") }
                     .addOnFailureListener { e -> Log.d("JOBSTATUS", "Error updating document", e) }
+            }
+
+            applicantJobBtn.setOnClickListener {
+                Toast.makeText(context, "Applicants Btn Clicked", Toast.LENGTH_SHORT).show()
+
             }
 
             view.setOnClickListener {

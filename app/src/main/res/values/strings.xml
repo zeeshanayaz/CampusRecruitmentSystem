@@ -78,13 +78,57 @@
     <string name="empty_list">Empty List</string>
     <string name="job_type">Job Type</string>
     <string name="job_shift">Job Shift</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="contact_number">Contact Number</string>
+    <string name="summarry">Summarry</string>
+    <string name="submit">Submit</string>
+    <string name="user_name">User Name</string>
 
-<!--Spinner-->
+    <!--Spinner-->
     <string-array name="career_level">
-        <item>Select...</item>
+        <item>Career Level</item>
         <item>Intern</item>
         <item>Software Engineer</item>
     </string-array>
+
+    <string-array name="applicant_experience">
+        <item>Applicant Experience</item>
+        <item>1 Year</item>
+        <item>2 Year</item>
+        <item>3 Year</item>
+        <item>4 Year</item>
+        <item>5 Year</item>
+    </string-array>
+
+    <string-array name="job_shift">
+        <item>Job Shift</item>
+        <item>Morning</item>
+        <item>Evening</item>
+        <item>Remote</item>
+    </string-array>
+
+    <string-array name="job_type">
+        <item>Job Type</item>
+        <item>Full Time</item>
+        <item>Part Time</item>
+        <item>Remote Working</item>
+    </string-array>
+
+    <string-array name="country">
+        <item>Country</item>
+        <item>Pakistan</item>
+    </string-array>
+
+
+    <string-array name="cities_pakistan">
+        <item>City</item>
+        <item>Karachi</item>
+        <item>Hyderabad</item>
+        <item>Lahore</item>
+        <item>Islamabad</item>
+    </string-array>
+
 
     <!--Spinner-->
 </resources>

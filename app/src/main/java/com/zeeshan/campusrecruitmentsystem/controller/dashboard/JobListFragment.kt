@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.EventListener
@@ -30,6 +31,8 @@ class JobListFragment : Fragment() {
     private lateinit var jobListAdapter: JobListAdapter
 
 
+    private lateinit var checkEmptyList : TextView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,6 +42,8 @@ class JobListFragment : Fragment() {
 
         appPrefUser = AppPref(activity!!).getUser()!!
         dbReference = FirebaseFirestore.getInstance()
+
+        checkEmptyList = view.findViewById(R.id.emptyListCheckText)
 
         return view
     }
@@ -85,10 +90,7 @@ class JobListFragment : Fragment() {
                             Log.d("UserListFragment", jobList.toString())
 
                             jobListAdapter.notifyDataSetChanged()
-                            if (!jobList.isEmpty())
-                                emptyListCheckText.visibility = View.INVISIBLE
-                            else
-                                emptyListCheckText.visibility = View.VISIBLE
+                            checkEmptyList()
                         }
 
                         DocumentChange.Type.MODIFIED -> {
@@ -121,6 +123,7 @@ class JobListFragment : Fragment() {
                                 }
                                 jobList.removeAt(index)
                                 jobListAdapter.notifyDataSetChanged()
+                                checkEmptyList()
                             }
                         }
                     }
@@ -145,10 +148,7 @@ class JobListFragment : Fragment() {
                             Log.d("UserListFragment", jobList.toString())
 
                             jobListAdapter.notifyDataSetChanged()
-                            if (!jobList.isEmpty())
-                                emptyListCheckText.visibility = View.INVISIBLE
-                            else
-                                emptyListCheckText.visibility = View.VISIBLE
+                            checkEmptyList()
                         }
 
                         DocumentChange.Type.MODIFIED -> {
@@ -181,11 +181,20 @@ class JobListFragment : Fragment() {
                                 }
                                 jobList.removeAt(index)
                                 jobListAdapter.notifyDataSetChanged()
+
+                                checkEmptyList()
                             }
                         }
                     }
                 }
             })
+    }
+
+    private fun checkEmptyList() {
+        if (jobList.isEmpty())
+            checkEmptyList.visibility = View.VISIBLE
+        else
+            checkEmptyList.visibility = View.GONE
     }
 
     private fun retrieveAllJobList() {
@@ -204,10 +213,7 @@ class JobListFragment : Fragment() {
                             Log.d("UserListFragment", jobList.toString())
 
                             jobListAdapter.notifyDataSetChanged()
-                            if (!jobList.isEmpty())
-                                emptyListCheckText.visibility = View.INVISIBLE
-                            else
-                                emptyListCheckText.visibility = View.VISIBLE
+                            checkEmptyList()
                         }
 
                         DocumentChange.Type.MODIFIED -> {
@@ -241,6 +247,7 @@ class JobListFragment : Fragment() {
                                 }
                                 jobList.removeAt(index)
                                 jobListAdapter.notifyDataSetChanged()
+                                checkEmptyList()
                             }
 
                         }
