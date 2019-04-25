@@ -1,6 +1,5 @@
 package com.zeeshan.campusrecruitmentsystem.controller.dashboard
 
-
 import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -16,27 +15,24 @@ import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.zeeshan.campusrecruitmentsystem.R
-import com.zeeshan.campusrecruitmentsystem.adapters.CompanyListAdapter
-import com.zeeshan.campusrecruitmentsystem.model.Company
-import com.zeeshan.campusrecruitmentsystem.model.User
-import com.zeeshan.campusrecruitmentsystem.utilities.AppPref
-import kotlinx.android.synthetic.main.fragment_company_list.*
+import com.zeeshan.campusrecruitmentsystem.adapters.StudentListAdapter
+import com.zeeshan.campusrecruitmentsystem.model.Student
 
-class CompanyListFragment : Fragment() {
+class StudentListFragment : Fragment() {
 
-    private lateinit var appPrefUser: User      //User from App Preference
+//    private lateinit var appPrefUser: User      //User from App Preference
     private lateinit var dbReference: FirebaseFirestore
-    private var companyList = ArrayList<Company>()
-    private lateinit var companyListAdapter: CompanyListAdapter
+    private var studentList = ArrayList<Student>()
+    private lateinit var studentListAdapter: StudentListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_company_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_student_list, container, false)
 
-        appPrefUser = AppPref(activity!!).getUser()!!
+//        appPrefUser = AppPref(activity!!).getUser()!!
         dbReference = FirebaseFirestore.getInstance()
 
         return view
@@ -45,26 +41,25 @@ class CompanyListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.companyListRecycler)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.studentListRecycler)
         recyclerView.layoutManager = LinearLayoutManager(activity!!)
 
-        companyListAdapter = CompanyListAdapter(activity!!, companyList, dbReference ,{
+        studentListAdapter = StudentListAdapter(activity!!, studentList, dbReference, {
             //            OnClick
-            Toast.makeText(activity!!, "Clicked ${it.companyName}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity!!, "Clicked ${it.firstName} ${it.lastName}", Toast.LENGTH_SHORT).show()
         }, {
             //            On Long Click
-            Toast.makeText(activity!!, "Long Clicked ${it.companyName}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity!!, "Long Clicked ${it.firstName} ${it.lastName}", Toast.LENGTH_SHORT).show()
         })
 
-        recyclerView.adapter = companyListAdapter
+        recyclerView.adapter = studentListAdapter
 
-//        if (appPrefUser.userAccountType == "Student") retrieveAllCompaniesList()
-//        if (appPrefUser.userAccountType == "Admin") retrieveAllCompaniesList()
-        retrieveAllCompaniesList()
+        retrieveStudentList()
+
     }
 
-    private fun retrieveAllCompaniesList() {
-        dbReference.collection("Company")
+    private fun retrieveStudentList() {
+        dbReference.collection("Student")
             .addSnapshotListener(EventListener<QuerySnapshot> { querySnapshot, e ->
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e)
@@ -74,47 +69,45 @@ class CompanyListFragment : Fragment() {
                 for (dc in querySnapshot!!.documentChanges) {
                     when (dc.type) {
                         DocumentChange.Type.ADDED -> {
-                            companyList.add(dc.document.toObject(Company::class.java))
-                            println(companyList)
-                            Log.d("CompanyListFragment", companyList.toString())
+                            studentList.add(dc.document.toObject(Student::class.java))
+                            println(studentList)
+                            Log.d("StudentListFragment", studentList.toString())
 
-                            companyListAdapter.notifyDataSetChanged()
-                            if (!companyList.isEmpty())
-                                emptyListCheckText.visibility = View.INVISIBLE
-                            else
-                                emptyListCheckText.visibility = View.VISIBLE
+                            studentListAdapter.notifyDataSetChanged()
+//                            checkEmptyList()
                         }
 
                         DocumentChange.Type.MODIFIED -> {
                             if (dc.document != null) {
-                                val updatedCompany = dc.document.toObject(Company::class.java)
+                                val updatedStudent = dc.document.toObject(Student::class.java)
 
-                                companyList.forEachIndexed { position, companyObj ->
-                                    if (companyObj.equals(updatedCompany)) {
+                                studentList.forEachIndexed { position, studentObj ->
+                                    if (studentObj.equals(updatedStudent)) {
                                         println("MATCHED")
-                                        companyList[position] = updatedCompany
-                                        companyListAdapter.notifyDataSetChanged()
+                                        studentList[position] = updatedStudent
+                                        studentListAdapter.notifyDataSetChanged()
                                     } else {
                                         println("NOT MATCHED")
                                     }
                                 }
                             }
+
                         }
                         DocumentChange.Type.REMOVED -> {
                             if (dc.document != null) {
-                                val removedCompany = dc.document.toObject(Company::class.java)
+                                val removedStudent = dc.document.toObject(Student::class.java)
                                 var index: Int = -1
 
-                                companyList.forEachIndexed { position, studentObj ->
-                                    if (studentObj.equals(removedCompany)) {
+                                studentList.forEachIndexed { position, studentObj ->
+                                    if (studentObj.equals(removedStudent)) {
                                         println("MATCHED")
                                         index = position
                                     } else {
                                         println("NOT MATCHED")
                                     }
                                 }
-                                companyList.removeAt(index)
-                                companyListAdapter.notifyDataSetChanged()
+                                studentList.removeAt(index)
+                                studentListAdapter.notifyDataSetChanged()
 //                                checkEmptyList()
                             }
 
@@ -123,4 +116,5 @@ class CompanyListFragment : Fragment() {
                 }
             })
     }
+
 }

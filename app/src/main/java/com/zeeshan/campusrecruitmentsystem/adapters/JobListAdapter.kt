@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Color
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,9 +16,12 @@ import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zeeshan.campusrecruitmentsystem.R
 import com.zeeshan.campusrecruitmentsystem.model.Job
+import com.zeeshan.campusrecruitmentsystem.model.Student
 import com.zeeshan.campusrecruitmentsystem.utilities.AppPref
+import kotlinx.android.synthetic.main.applicant_list_dialog.view.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class JobListAdapter(
     var context: Context,
@@ -60,6 +64,9 @@ class JobListAdapter(
         var activeteJobBtn = view.findViewById<Button>(R.id.cardJobActiveBtn)
         var applicantJobBtn = view.findViewById<Button>(R.id.cardViewApplicantsJobBtn)
 
+        private var studentList = ArrayList<Student>()
+        private lateinit var studentListAdapter: StudentListAdapter
+
         val dialogBuilder = AlertDialog.Builder(context)
 
 
@@ -87,7 +94,7 @@ class JobListAdapter(
                     applyBtn.visibility = View.VISIBLE
                     activeteJobBtn.visibility = View.GONE
                     applicantJobBtn.visibility = View.GONE
-                    if (job.jobApplicant!!.contains(user.userId)){
+                    if (job.jobApplicant!!.contains(user.userId)) {
                         applyBtn.setText("Applied")
                     }
                 }
@@ -104,12 +111,6 @@ class JobListAdapter(
                     }
                     applyBtn.visibility = View.GONE
                 }
-//                "Admin" -> {
-//                    deleteBtn.visibility = View.VISIBLE
-//                    withdrawBtn.visibility = View.GONE
-//                    activeteJobBtn.visibility = View.GONE
-//                    applyBtn.visibility = View.GONE
-//                }
             }
             if (job.jobStatus == "Inactive") {
                 checkJob.setTextColor(Color.parseColor("#FF0000"))
@@ -119,14 +120,14 @@ class JobListAdapter(
 
 
             applyBtn.setOnClickListener {
-//                Toast.makeText(context, "Apply Btn Clicked", Toast.LENGTH_SHORT).show()
+                //                Toast.makeText(context, "Apply Btn Clicked", Toast.LENGTH_SHORT).show()
                 var applicantList = job.jobApplicant
 
                 if (applicantList?.size == 1 && applicantList[0] == "") {
                     applicantList[0] = user!!.userId
                 } else if (!applicantList!!.contains(user!!.userId)) {
                     applicantList.add(user.userId)
-                } else{
+                } else {
                     Toast.makeText(context, "You have already applied for the job..", Toast.LENGTH_SHORT).show()
                 }
                 dbReference.collection("Job-Post").document(job.jobId).update("jobApplicant", applicantList)
@@ -179,8 +180,32 @@ class JobListAdapter(
             }
 
             applicantJobBtn.setOnClickListener {
-                Toast.makeText(context, "Applicants Btn Clicked", Toast.LENGTH_SHORT).show()
 
+                studentList.clear()
+
+
+                Toast.makeText(context, "Applicants Btn Clicked", Toast.LENGTH_SHORT).show()
+                val applicantListDialog =
+                    LayoutInflater.from(context).inflate(R.layout.applicant_list_dialog, null)
+                val dialogBuilder = AlertDialog.Builder(context)
+                    .setView(applicantListDialog)
+                    .setTitle("Applicant List..")
+                    .show()
+
+                applicantListDialog.jobApplicantListRecycler.layoutManager = LinearLayoutManager(context)
+                studentListAdapter = StudentListAdapter(context, studentList, dbReference, {
+                    //            OnClick
+                    Toast.makeText(context, "Clicked ${it.firstName} ${it.lastName}", Toast.LENGTH_SHORT).show()
+                }, {
+                    //            On Long Click
+                    Toast.makeText(context, "Long Clicked ${it.firstName} ${it.lastName}", Toast.LENGTH_SHORT).show()
+                })
+
+                applicantListDialog.jobApplicantListRecycler.adapter = studentListAdapter
+
+
+
+                retriveApplicantList(job.jobApplicant)
             }
 
             view.setOnClickListener {
@@ -191,6 +216,18 @@ class JobListAdapter(
                 itemLongClick(job)
                 true
             }
+        }
+
+        private fun retriveApplicantList(applicantIDList: ArrayList<String>?) {
+            dbReference.collection("Student").get()
+                .addOnSuccessListener {
+                    for (dc in it) {
+                        if (applicantIDList!!.contains(dc.id)) {
+                            studentList.add(dc.toObject(Student::class.java))
+                        }
+                    }
+                    studentListAdapter.notifyDataSetChanged()
+                }
         }
     }
 }

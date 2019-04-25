@@ -397,6 +397,18 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                     }
                 }
             }
+            R.id.nav_company_list_student -> {
+                supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
+                    // the fragment exists
+                    if (it is CompanyListFragment) {
+                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
+                        // The presented fragment is FooFragment type
+                    } else {
+                        supportActionBar!!.setTitle("Registered Companies - CRS")
+                        changeDashboardFragment(CompanyListFragment())
+                    }
+                }
+            }
 //            Company Navigation
             R.id.nav_pmb_company -> {
                 supportActionBar!!.setTitle("PMB - CSR")
@@ -427,12 +439,29 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 }
             }
             R.id.nav_student_list_company -> {
-                supportActionBar!!.setTitle("Student List - CRS")
-                Toast.makeText(this, "nav_student_list_company", Toast.LENGTH_SHORT).show()
+                supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
+                    // the fragment exists
+                    if (it is StudentListFragment) {
+                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
+                        // The presented fragment is FooFragment type
+                    } else {
+                        supportActionBar!!.setTitle("Student List - CRS")
+                        changeDashboardFragment(StudentListFragment())
+                    }
+                }
             }
 //            Admin Navigation
             R.id.nav_student_list_admin -> {
-                Toast.makeText(this, "nav_student_list_admin", Toast.LENGTH_SHORT).show()
+                supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
+                    // the fragment exists
+                    if (it is StudentListFragment) {
+                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
+                        // The presented fragment is FooFragment type
+                    } else {
+                        supportActionBar!!.setTitle("Student List - CRS")
+                        changeDashboardFragment(StudentListFragment())
+                    }
+                }
             }
             R.id.nav_company_list_admin -> {
                 supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {

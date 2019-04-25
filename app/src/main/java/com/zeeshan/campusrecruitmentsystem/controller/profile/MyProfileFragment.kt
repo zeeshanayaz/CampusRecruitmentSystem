@@ -87,24 +87,35 @@ class MyProfileFragment : Fragment() {
         ref.putFile(selectedPhotoUri!!)
             .addOnSuccessListener { uri ->
                 ref.downloadUrl.addOnSuccessListener {
-                    dbReference.collection(appPrefUser.userAccountType).document(appPrefUser.userId)
-                        .update("profileImageUrl", "$it")
-                        .addOnSuccessListener { Log.d("MYPROFILE", "DocumentSnapshot successfully updated!") }
-                        .addOnFailureListener { e -> Log.d("MYPROFILE", "Error updating document", e) }
-
-                    updateAppPrefStudent()
+                    if (appPrefUser.userAccountType == "Student"){
+                        dbReference.collection(appPrefUser.userAccountType).document(appPrefUser.userId)
+                            .update("profileImageUrl", "$it")
+                            .addOnSuccessListener { Log.d("MYPROFILE", "DocumentSnapshot successfully updated!") }
+                            .addOnFailureListener { e -> Log.d("MYPROFILE", "Error updating document", e) }
+                    } else if(appPrefUser.userAccountType == "Company"){
+                        dbReference.collection(appPrefUser.userAccountType).document(appPrefUser.userId)
+                            .update("companyLogoUrl", "$it")
+                            .addOnSuccessListener { Log.d("MYPROFILE", "DocumentSnapshot successfully updated!") }
+                            .addOnFailureListener { e -> Log.d("MYPROFILE", "Error updating document", e) }
+                    }
+                        updateAppPref()
                 }
 
             }
 
     }
 
-    private fun updateAppPrefStudent() {
+    private fun updateAppPref() {
         dbReference.collection(appPrefUser.userAccountType).document(appPrefUser.userId).get()
             .addOnSuccessListener {
                 if (it.exists()) {
-                    val retrieveData: Student = it.toObject(Student::class.java)!!
-                    AppPref(activity!!).setStudent(retrieveData)
+                    if (appPrefUser.userAccountType == "Student") {
+                        val retrieveData: Student = it.toObject(Student::class.java)!!
+                        AppPref(activity!!).setStudent(retrieveData)
+                    } else if (appPrefUser.userAccountType == "Company") {
+                        val retrieveData: Company = it.toObject(Company::class.java)!!
+                        AppPref(activity!!).setCompany(retrieveData)
+                    }
                 }
             }
     }
@@ -152,7 +163,7 @@ class MyProfileFragment : Fragment() {
             profileUserNameText.setTextColor(resources.getColor(R.color.colorSecondaryText))
         }
 
-        if (!appPrefCompany.companyLogoUrl.isNullOrEmpty()){
+        if (!appPrefCompany.companyLogoUrl.isNullOrEmpty()) {
             profileSeletPhotoBtn.alpha = 0f
             Glide.with(activity!!).applyDefaultRequestOptions(RequestOptions().apply() {
                 placeholder(CircularProgressDrawable(activity!!).apply {
@@ -161,8 +172,9 @@ class MyProfileFragment : Fragment() {
                     start()
                 })
             }).load(appPrefCompany.companyLogoUrl).into(profileImageImageView)
-        } else{
-            val profileDummyImageUrl = "https://firebasestorage.googleapis.com/v0/b/campusrecruitmentsystem-0.appspot.com/o/images%2FdummyProfileImage%2Fcompanydummyprofileicon.png?alt=media&token=43cf909d-7efe-4bb6-9e2a-fbabca75e683"
+        } else {
+            val profileDummyImageUrl =
+                "https://firebasestorage.googleapis.com/v0/b/campusrecruitmentsystem-0.appspot.com/o/images%2FdummyProfileImage%2Fcompanydummyprofileicon.png?alt=media&token=43cf909d-7efe-4bb6-9e2a-fbabca75e683"
             profileSeletPhotoBtn.alpha = 0f
             Glide.with(activity!!).applyDefaultRequestOptions(RequestOptions().apply() {
                 placeholder(CircularProgressDrawable(activity!!).apply {

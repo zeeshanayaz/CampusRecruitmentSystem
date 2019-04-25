@@ -18,6 +18,11 @@
                 android:icon="@drawable/ic_menu_chat"
                 android:title="@string/applied_jobs"/>
 
+        <item
+                android:id="@+id/nav_company_list_student"
+                android:icon="@drawable/ic_menu_chat"
+                android:title="@string/companies_list"/>
+
     </group>
     <group android:id="@+id/company_nav_menu" android:visible="false" android:checkableBehavior="single">
         <item

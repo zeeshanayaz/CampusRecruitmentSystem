@@ -51,10 +51,6 @@ class JobListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-//        changeButtonVisibility(appPrefUser, view)
-
-
         val recyclerView = view.findViewById<RecyclerView>(R.id.jobListRecycler)
         recyclerView.layoutManager = LinearLayoutManager(activity!!)
 
