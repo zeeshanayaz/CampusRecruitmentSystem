@@ -1,9 +1,12 @@
 package com.zeeshan.campusrecruitmentsystem.controller.splashScreen
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.MotionEvent
+import android.view.inputmethod.InputMethodManager
 import com.google.firebase.auth.FirebaseAuth
 import com.zeeshan.campusrecruitmentsystem.R
 import com.zeeshan.campusrecruitmentsystem.controller.dashboard.DashboardActivity
@@ -35,5 +38,13 @@ class SplashScreenActivity : AppCompatActivity() {
         splashLetStartBtn.setOnClickListener {
             startActivity(Intent(this@SplashScreenActivity, RegistrationActivity::class.java))
         }
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        if (currentFocus != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        }
+        return super.dispatchTouchEvent(ev)
     }
 }

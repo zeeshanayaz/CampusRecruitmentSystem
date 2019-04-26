@@ -142,7 +142,7 @@ class JobListAdapter(
             }
 
             withdrawBtn.setOnClickListener {
-                Toast.makeText(context, "Withdraw Btn Clicked", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, "Withdraw Btn Clicked", Toast.LENGTH_SHORT).show()
                 dbReference.collection("Job-Post").document(job.jobId).update("jobStatus", "Inactive")
                     .addOnSuccessListener { Log.d("JOBSTATUS", "DocumentSnapshot successfully updated!") }
                     .addOnFailureListener { e -> Log.d("JOBSTATUS", "Error updating document", e) }
@@ -173,7 +173,7 @@ class JobListAdapter(
             }
 
             activeteJobBtn.setOnClickListener {
-                Toast.makeText(context, "Activate Btn Clicked", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, "Activate Btn Clicked", Toast.LENGTH_SHORT).show()
                 dbReference.collection("Job-Post").document(job.jobId).update("jobStatus", "Active")
                     .addOnSuccessListener { Log.d("JOBSTATUS", "DocumentSnapshot successfully updated!") }
                     .addOnFailureListener { e -> Log.d("JOBSTATUS", "Error updating document", e) }
@@ -184,7 +184,7 @@ class JobListAdapter(
                 studentList.clear()
 
 
-                Toast.makeText(context, "Applicants Btn Clicked", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, "Applicants Btn Clicked", Toast.LENGTH_SHORT).show()
                 val applicantListDialog =
                     LayoutInflater.from(context).inflate(R.layout.applicant_list_dialog, null)
                 val dialogBuilder = AlertDialog.Builder(context)

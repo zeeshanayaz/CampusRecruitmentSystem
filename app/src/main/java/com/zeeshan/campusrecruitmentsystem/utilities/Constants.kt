@@ -7,3 +7,6 @@ const val DummyCompanyImageUrl =
 
 const val DummyStudentImageUrl =
     "https://firebasestorage.googleapis.com/v0/b/campusrecruitmentsystem-0.appspot.com/o/images%2FdummyProfileImage%2Fuserdefaultprofileimage.png?alt=media&token=a27bf46e-d6fe-417d-aaed-1a5e74b8d54a"
+
+
+var CurrentStatus = ""

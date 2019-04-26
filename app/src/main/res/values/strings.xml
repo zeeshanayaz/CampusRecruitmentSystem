@@ -84,6 +84,9 @@
     <string name="summarry">Summarry</string>
     <string name="submit">Submit</string>
     <string name="user_name">User Name</string>
+    <string name="write_your_message">Write your message</string>
+    <string name="send_message_button">Send Messagew button</string>
+    <string name="reciever_message">Reciever Message</string>
 
     <!--Spinner-->
     <string-array name="career_level">

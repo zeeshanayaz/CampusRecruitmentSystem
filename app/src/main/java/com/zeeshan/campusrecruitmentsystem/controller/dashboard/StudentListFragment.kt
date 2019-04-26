@@ -1,6 +1,7 @@
 package com.zeeshan.campusrecruitmentsystem.controller.dashboard
 
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -16,7 +17,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.zeeshan.campusrecruitmentsystem.R
 import com.zeeshan.campusrecruitmentsystem.adapters.StudentListAdapter
+import com.zeeshan.campusrecruitmentsystem.controller.PMB.PMBActivity
 import com.zeeshan.campusrecruitmentsystem.model.Student
+import com.zeeshan.campusrecruitmentsystem.utilities.CurrentStatus
 
 class StudentListFragment : Fragment() {
 
@@ -46,7 +49,15 @@ class StudentListFragment : Fragment() {
 
         studentListAdapter = StudentListAdapter(activity!!, studentList, dbReference, {
             //            OnClick
-            Toast.makeText(activity!!, "Clicked ${it.firstName} ${it.lastName}", Toast.LENGTH_SHORT).show()
+            if (CurrentStatus == ""){
+            Toast.makeText(activity!!, "Clicked ${it.firstName} ${it.lastName} to view profile", Toast.LENGTH_SHORT).show()
+            }else{
+                val chatIntent = Intent(activity, PMBActivity::class.java).apply {
+                    PMBActivity.user = it
+                }
+                startActivity(chatIntent)
+            }
+
         }, {
             //            On Long Click
             Toast.makeText(activity!!, "Long Clicked ${it.firstName} ${it.lastName}", Toast.LENGTH_SHORT).show()

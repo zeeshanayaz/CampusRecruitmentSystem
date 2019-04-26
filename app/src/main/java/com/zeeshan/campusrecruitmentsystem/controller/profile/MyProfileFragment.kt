@@ -2,6 +2,7 @@ package com.zeeshan.campusrecruitmentsystem.controller.profile
 
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -12,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.firestore.FirebaseFirestore
@@ -31,6 +33,8 @@ class MyProfileFragment : Fragment() {
     private lateinit var appPrefCompany: Company         //Company from App Preference
     private lateinit var appPrefStudent: Student        //Company from App Preference
     private lateinit var dbReference: FirebaseFirestore
+    private lateinit var progress: ProgressDialog
+
 
 
     override fun onCreateView(
@@ -42,7 +46,7 @@ class MyProfileFragment : Fragment() {
 
         appPrefUser = AppPref(activity!!).getUser()!!
         dbReference = FirebaseFirestore.getInstance()
-
+        progress = ProgressDialog(activity!!)
 
         return view
     }
@@ -76,6 +80,14 @@ class MyProfileFragment : Fragment() {
             val bitmap = BitmapFactory.decodeStream(inputStream)
             profileImageImageView.setImageBitmap(bitmap)
             profileSeletPhotoBtn.alpha = 0f
+
+
+            progress.setMessage("Please wait, while we are updating profile picture.....")
+            progress.setCancelable(false)
+            progress.show()
+
+
+
             uploadImageToFirebase()
         }
     }
@@ -83,24 +95,27 @@ class MyProfileFragment : Fragment() {
     private fun uploadImageToFirebase() {
         val fileName = appPrefUser.userId
         val ref = FirebaseStorage.getInstance().getReference("/images/profileImages/$fileName")
-
         ref.putFile(selectedPhotoUri!!)
             .addOnSuccessListener { uri ->
                 ref.downloadUrl.addOnSuccessListener {
-                    if (appPrefUser.userAccountType == "Student"){
+                    if (appPrefUser.userAccountType == "Student") {
                         dbReference.collection(appPrefUser.userAccountType).document(appPrefUser.userId)
                             .update("profileImageUrl", "$it")
                             .addOnSuccessListener { Log.d("MYPROFILE", "DocumentSnapshot successfully updated!") }
                             .addOnFailureListener { e -> Log.d("MYPROFILE", "Error updating document", e) }
-                    } else if(appPrefUser.userAccountType == "Company"){
+                    } else if (appPrefUser.userAccountType == "Company") {
                         dbReference.collection(appPrefUser.userAccountType).document(appPrefUser.userId)
                             .update("companyLogoUrl", "$it")
                             .addOnSuccessListener { Log.d("MYPROFILE", "DocumentSnapshot successfully updated!") }
                             .addOnFailureListener { e -> Log.d("MYPROFILE", "Error updating document", e) }
                     }
-                        updateAppPref()
+                    updateAppPref()
                 }
 
+            }
+            .addOnFailureListener {
+                Toast.makeText(activity, "Profile Picture failed to update....", Toast.LENGTH_SHORT).show()
+                progress.dismiss()
             }
 
     }
@@ -118,6 +133,8 @@ class MyProfileFragment : Fragment() {
                     }
                 }
             }
+
+        progress.dismiss()
     }
 
     private fun displayStudentData() {

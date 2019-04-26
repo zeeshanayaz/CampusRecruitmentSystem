@@ -146,7 +146,7 @@ class JobAppliedListAdapter(
                     .addOnSuccessListener { Log.d("JOBSTATUS", "DocumentSnapshot successfully updated!") }
                     .addOnFailureListener { e -> Log.d("JOBSTATUS", "Error updating document", e) }
 
-                Toast.makeText(context, "Withdraw Btn Clicked", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, "Withdraw Btn Clicked", Toast.LENGTH_SHORT).show()
 
             }
 

@@ -3,6 +3,7 @@ package com.zeeshan.campusrecruitmentsystem.controller.dashboard
 import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.ContentValues
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -11,10 +12,8 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.SpinnerAdapter
 import android.widget.Toast
@@ -32,6 +31,7 @@ import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.app_bar_dashboard.*
 import kotlinx.android.synthetic.main.create_company_profile_dialog.view.*
 import kotlinx.android.synthetic.main.create_student_profile_dialog.view.*
+
 
 class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -335,7 +335,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 return true
             }
             R.id.menu_profile -> {
-                Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, ProfileActivity::class.java).apply {
                     //                                    putExtra(EXTRA_MESSAGE, "LoginFragment()")
                 }
@@ -354,8 +353,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
                     // the fragment exists
                     if (it is HelpFragment) {
-
-                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
                         // The presented fragment is FooFragment type
                     } else {
                         supportActionBar!!.setTitle(R.string.help_amp_feedback)
@@ -364,19 +361,27 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 }
             }
             R.id.nav_share -> {
-                Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show()
+
                 shareApp()
             }
 //            Students Navigation
-            R.id.nav_pmb_student -> {
-                supportActionBar!!.setTitle("PMB - CRS")
-                Toast.makeText(this, "PMB Students", Toast.LENGTH_SHORT).show()
-            }
+//            R.id.nav_pmb_student -> {
+//                CurrentStatus = "Student"
+//                supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
+//                    // the fragment exists
+//                    if (it is PMBFragment) {
+//                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
+//                        // The presented fragment is FooFragment type
+//                    } else {
+//                        supportActionBar!!.setTitle("PMB - CRS")
+//                        changeDashboardFragment(PMBFragment())
+//                    }
+//                }
+//            }
             R.id.nav_job_list_student -> {
                 supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
                     // the fragment exists
                     if (it is JobListFragment) {
-                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
                         // The presented fragment is FooFragment type
                     } else {
                         supportActionBar!!.setTitle("Job List - CRS")
@@ -385,11 +390,9 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 }
             }
             R.id.nav_applied_job_student -> {
-//                Toast.makeText(this, "nav_applied_job_student", Toast.LENGTH_SHORT).show()
                 supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
                     // the fragment exists
                     if (it is AppliedJobFragment) {
-                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
                         // The presented fragment is FooFragment type
                     } else {
                         supportActionBar!!.setTitle("Job Applied List - CRS")
@@ -401,7 +404,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
                     // the fragment exists
                     if (it is CompanyListFragment) {
-                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
                         // The presented fragment is FooFragment type
                     } else {
                         supportActionBar!!.setTitle("Registered Companies - CRS")
@@ -410,15 +412,24 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 }
             }
 //            Company Navigation
-            R.id.nav_pmb_company -> {
-                supportActionBar!!.setTitle("PMB - CSR")
-                Toast.makeText(this, "nav_pmb_company", Toast.LENGTH_SHORT).show()
-            }
+//            R.id.nav_pmb_company -> {
+//                CurrentStatus = "Company"
+//                supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
+//                    // the fragment exists
+//                    if (it is PMBFragment) {
+//                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
+//                        // The presented fragment is FooFragment type
+//                    } else {
+//                        supportActionBar!!.setTitle("PMB - CRS")
+//                        changeDashboardFragment(PMBFragment())
+//                    }
+//                }
+//
+//            }
             R.id.nav_post_job_company -> {
                 supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
                     // the fragment exists
                     if (it is PostJobFragment) {
-                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
                         // The presented fragment is FooFragment type
                     } else {
                         supportActionBar!!.setTitle(R.string.post_job)
@@ -430,7 +441,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
                     // the fragment exists
                     if (it is JobListFragment) {
-                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
                         // The presented fragment is FooFragment type
                     } else {
                         supportActionBar!!.setTitle("Job List - CRS")
@@ -442,7 +452,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
                     // the fragment exists
                     if (it is StudentListFragment) {
-                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
                         // The presented fragment is FooFragment type
                     } else {
                         supportActionBar!!.setTitle("Student List - CRS")
@@ -455,7 +464,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
                     // the fragment exists
                     if (it is StudentListFragment) {
-                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
                         // The presented fragment is FooFragment type
                     } else {
                         supportActionBar!!.setTitle("Student List - CRS")
@@ -467,7 +475,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
                     // the fragment exists
                     if (it is CompanyListFragment) {
-                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
                         // The presented fragment is FooFragment type
                     } else {
                         supportActionBar!!.setTitle("Registered Companies - CRS")
@@ -479,7 +486,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 supportFragmentManager.findFragmentById(R.id.dashboardContainer)?.let {
                     // the fragment exists
                     if (it is JobListFragment) {
-                        Toast.makeText(this, "Transaction not Completed", Toast.LENGTH_SHORT).show()
                         // The presented fragment is FooFragment type
                     } else {
                         supportActionBar!!.setTitle("Job List - CRS")
@@ -500,7 +506,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             R.id.dashboardContainer,
             fragment
         ).commit()
-        Toast.makeText(this, "$fragment", Toast.LENGTH_SHORT).show()
     }
 
 
@@ -547,4 +552,13 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         dialogBuilder.create()
         dialogBuilder.show()
     }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        if (currentFocus != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
 }

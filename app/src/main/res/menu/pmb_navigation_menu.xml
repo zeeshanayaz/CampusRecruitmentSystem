@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:id="@+id/navigation_pmb_chats"
+            android:icon="@drawable/ic_menu_chat"
+            android:visible="true"
+            android:title="Recent Chats"/>
+
+    <item
+            android:id="@+id/navigation_pmb_student"
+            android:icon="@drawable/ic_person"
+            android:visible="true"
+            android:title="Student List"/>
+
+    <!--<item-->
+            <!--android:id="@+id/navigation_pmb_company"-->
+            <!--android:icon="@drawable/companydummyprofileicon"-->
+            <!--android:visible="true"-->
+            <!--android:title="Company List"/>-->
+
+</menu>
