@@ -15,7 +15,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zeeshan.campusrecruitmentsystem.R
 import com.zeeshan.campusrecruitmentsystem.controller.dashboard.DashboardActivity
-import com.zeeshan.campusrecruitmentsystem.controller.profile.ProfileActivity
 import com.zeeshan.campusrecruitmentsystem.model.Company
 import com.zeeshan.campusrecruitmentsystem.model.Student
 import com.zeeshan.campusrecruitmentsystem.model.User
@@ -129,11 +128,22 @@ class LogInFragment : Fragment() {
                         retrieveData(uid, dbReference, accountTypeStatus)
                     } else {
                         progress.dismiss()
-                        Toast.makeText(activity, "There might be some error in the input fields. Please verify.....", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            activity,
+                            "There might be some error in the input fields. Please verify.....",
+                            Toast.LENGTH_LONG
+                        ).show()
                         auth.signOut()
                     }
 
+                }else{
+                    progress.dismiss()
+                    Toast.makeText(activity, "User Not Found! please contact admin support.....", Toast.LENGTH_LONG).show()
                 }
+            }
+            .addOnFailureListener {
+//                progress.dismiss()
+//                Toast.makeText(activity, "User Not Found! please contact admin support.....", Toast.LENGTH_LONG).show()
             }
     }
 
@@ -143,8 +153,8 @@ class LogInFragment : Fragment() {
                 if (it.exists()) {
                     when (accountTypeStatus) {
                         "Student" -> {
-                    val retrieveData: Student = it.toObject(Student::class.java)!!
-                    AppPref(activity!!).setStudent(retrieveData)
+                            val retrieveData: Student = it.toObject(Student::class.java)!!
+                            AppPref(activity!!).setStudent(retrieveData)
                         }
                         "Company" -> {
                             val retrieveData: Company = it.toObject(Company::class.java)!!
@@ -159,10 +169,11 @@ class LogInFragment : Fragment() {
                 navigateToMain()
             }
     }
+
     //    Navigate TO Main Dashboard
     private fun navigateToMain() {
         val registrationActivity = activity!! as RegistrationActivity
-        
+
         val intent = Intent(activity!!, DashboardActivity::class.java).apply {
             //            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }

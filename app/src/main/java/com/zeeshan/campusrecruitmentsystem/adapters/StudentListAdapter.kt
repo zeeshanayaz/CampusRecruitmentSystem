@@ -85,7 +85,7 @@ class StudentListAdapter(
                 "Admin" -> {
                     deleteBtn.visibility = View.VISIBLE
                 }
-                "Stuednt", "Company" -> {
+                "Student", "Company" -> {
                     deleteBtn.visibility = View.GONE
                 }
             }
@@ -101,9 +101,15 @@ class StudentListAdapter(
                 dialogBuilder.setPositiveButton("Delete", object : DialogInterface.OnClickListener {
                     override fun onClick(dialog: DialogInterface?, which: Int) {
                         dbReference.collection("Student").document(student.studentId).delete()
-                            .addOnSuccessListener { Log.d("STUDENT", "DocumentSnapshot successfully deleted!") }
+                            .addOnSuccessListener {
+                                Log.d("STUDENT", "DocumentSnapshot successfully deleted!")
+                                deleteStdFromUser(dbReference, student)
+                            }
                             .addOnFailureListener { e -> Log.d("STUDENT", "Error deleting document", e) }
-                        Toast.makeText(context, "${student.firstName} ${student.lastName} Deleted", Toast.LENGTH_SHORT).show()
+
+
+                        Toast.makeText(context, "${student.firstName} ${student.lastName} Deleted", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 })
                 dialogBuilder.setNegativeButton("Cancel", object : DialogInterface.OnClickListener {
@@ -125,5 +131,15 @@ class StudentListAdapter(
                 true
             }
         }
+
+        private fun deleteStdFromUser(dbReference: FirebaseFirestore, student: Student) {
+            dbReference.collection("Users").document(student.studentId).delete()
+                .addOnSuccessListener {
+                    //                    FirebaseAuth.getInstance().deleteUser(student.studentId)
+                    Log.d("STUDENT", "DocumentSnapshot successfully deleted from User Table!")
+                }
+                .addOnFailureListener { Log.d("STUDENT", "DocumentSnapshot failed to deleted!") }
+        }
+
     }
 }

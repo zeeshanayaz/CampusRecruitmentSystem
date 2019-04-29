@@ -15,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zeeshan.campusrecruitmentsystem.R
 import com.zeeshan.campusrecruitmentsystem.model.Company
@@ -113,7 +114,10 @@ class CompanyListAdapter(
                 dialogBuilder.setPositiveButton("Delete", object : DialogInterface.OnClickListener {
                     override fun onClick(dialog: DialogInterface?, which: Int) {
                         dbReference.collection("Company").document(company.companyId).delete()
-                            .addOnSuccessListener { Log.d("Company", "DocumentSnapshot successfully deleted!") }
+                            .addOnSuccessListener {
+                                Log.d("Company", "DocumentSnapshot successfully deleted!")
+                                deleteCompanyfromUserTb(dbReference, company)
+                            }
                             .addOnFailureListener { e -> Log.d("STUDENT", "Error deleting document", e) }
                         Toast.makeText(context, "${company.companyName} Deleted", Toast.LENGTH_SHORT).show()
                     }
@@ -136,6 +140,16 @@ class CompanyListAdapter(
                 itemLongClick(company)
                 true
             }
+        }
+
+        private fun deleteCompanyfromUserTb(dbReference: FirebaseFirestore, company: Company) {
+            dbReference.collection("Users").document(company.companyId).delete()
+                .addOnSuccessListener {
+//                    FirebaseAuth.getInstance().deleteUserAsync(company.companyId)
+                    Log.d("COMPANY", "DocumentSnapshot successfully deleted from User Table!")
+
+                }
+                .addOnFailureListener { Log.d("COMPANY", "DocumentSnapshot failed to deleted!") }
         }
     }
 }
