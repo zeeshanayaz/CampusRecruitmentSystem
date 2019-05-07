@@ -14,18 +14,25 @@
             android:windowSoftInputMode="adjustPan">
         <activity
                 android:name=".controller.splashScreen.SplashScreenActivity"
-                android:noHistory="true">
+                android:noHistory="true"
+                android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".controller.registration.RegistrationActivity">
+        <activity
+                android:name=".controller.registration.RegistrationActivity"
+                android:configChanges="orientation|screenSize">
         </activity>
-        <activity android:name=".controller.dashboard.DashboardActivity">
+        <activity
+                android:name=".controller.dashboard.DashboardActivity"
+                android:configChanges="orientation|screenSize">
         </activity>
-        <activity android:name=".controller.profile.ProfileActivity">
+        <activity
+                android:name=".controller.profile.ProfileActivity"
+                android:configChanges="orientation|screenSize">
         </activity>
         <activity android:name=".controller.PMB.PMBActivity">
         </activity>
